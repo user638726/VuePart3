@@ -191,10 +191,11 @@ a {
   text-decoration:none;
 }
 .card-title {
-  font-size: 3rem;
+  font-size: clamp(1.5rem, 5vw, 3rem);
 }
+
 .card-text {
-  font-size: 2rem;
+  font-size: clamp(1rem, 3vw, 2rem);
 }
 html {
   scroll-behavior: smooth;
