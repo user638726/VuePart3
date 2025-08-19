@@ -59,23 +59,23 @@ methods: {
 <Loading :active="isLoading"></Loading>
   <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">籃球瘋</a>
+    <a class="navbar-brand">籃球瘋</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-           <a class="nav-link" href="/">首頁</a>
+           <a class="nav-link" href="/#">首頁</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#basketball1">關於</a>
+          <a class="nav-link" href="#/basketball1">關於</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#basketball2">理念</a>
+          <a class="nav-link" href="#/basketball2">理念</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#products">產品</a>
+          <a class="nav-link" href="#/products">產品</a>
         </li>
       </ul>
       <a href="/user/cart"><span class="navbar-text" style="margin-right: 0.5cm;">
