@@ -79,10 +79,8 @@ methods: {
         </li>
       </ul>
       <router-link class="nav-link" to="/user/cart" style="margin-right: 0.5cm;">購物車</router-link>
-      <a href="/#/dashboard/products"><span class="navbar-text">
-        後台管理
-      </span></a>
-    </div>
+      <router-link class="nav-link" to="/dashboard/products">後台管理</router-link>
+      </div>
   </div>
 </nav>
 <div id="carouselExampleIndicators" class="carousel slide">
