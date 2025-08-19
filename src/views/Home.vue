@@ -46,9 +46,10 @@ methods: {
        });
     },
     scrollTo(id) {
-    const el = document.getElementById(id);
+    let el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
+      el = false;
     }
   },
 },
@@ -84,8 +85,8 @@ methods: {
           <a class="nav-link"  @click.prevent="scrollTo('products')">產品</a>
         </li>
       </ul>
-      <router-link class="nav-link" to="/user/cart" style="margin-right: 0.5cm;">購物車</router-link>
-      <router-link class="nav-link" to="/dashboard/products">後台管理</router-link>
+      <router-link class="nav-link nav-text" to="/user/cart" style="margin-right: 0.5cm;">購物車</router-link>
+      <router-link class="nav-link nav-text" to="/dashboard/products">後台管理</router-link>
       </div>
   </div>
 </nav>
