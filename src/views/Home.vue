@@ -66,22 +66,22 @@ methods: {
     <div class="collapse navbar-collapse" id="navbarText">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-           <a class="nav-link" href="/#">首頁</a>
+           <a class="nav-link" href="/#/">首頁</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#/basketball1">關於</a>
+          <a class="nav-link" href="/#/basketball1">關於</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#/basketball2">理念</a>
+          <a class="nav-link" href="/#/basketball2">理念</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#/products">產品</a>
+          <a class="nav-link" href="/#/products">產品</a>
         </li>
       </ul>
-      <a href="/user/cart"><span class="navbar-text" style="margin-right: 0.5cm;">
+      <a href="/#/user/cart"><span class="navbar-text" style="margin-right: 0.5cm;">
         購物車
       </span></a>
-      <a href="/dashboard/products"><span class="navbar-text">
+      <a href="/#/dashboard/products"><span class="navbar-text">
         後台管理
       </span></a>
     </div>
@@ -113,21 +113,21 @@ methods: {
     <span class="visually-hidden">Next</span>
   </button>
 </div>
-<div class="card bg-dark text-black" id="/basketball1">
+<div class="card bg-dark text-black" id="/#/basketball1">
   <img src="../assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg" class="card-img" alt="...">
   <div class="card-img-overlay">
     <h5 class="card-title">關於籃球瘋</h5>
     <p class="card-text">「籃球瘋」不只是名詞，是一種生活態度。我們相信籃球能連結人與人、城市與夢想。從街頭到球場，從素人到職業，我們支持每一位為夢想努力的球員。歡迎加入我們，一起為籃球而瘋</p>
   </div>
 </div>
-<div class="card bg-dark text-black" id="/basketball2">
+<div class="card bg-dark text-black" id="/#/basketball2">
   <img src="../assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg" class="card-img" alt="籃球理念圖">
   <div class="card-img-overlay">
     <h5 class="card-title">籃球瘋理念</h5>
     <p class="card-text">我們相信籃球是一種語言，無需翻譯，卻能跨越文化與年齡。無論你是初學者還是老手，在這裡都能找到屬於自己的位置。我們致力於打造一個熱血、自由、且共融的籃球文化圈。</p>
   </div>
 </div>
-<section class="container my-5" id="/products">
+<section class="container my-5" id="/#/products">
   <h2 class="text-center mb-4">熱賣產品</h2>
   <div class="row justify-content-center">
     <div class="col-md-10">
