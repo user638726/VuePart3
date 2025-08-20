@@ -148,7 +148,7 @@ methods: {
           <tr v-for="item in products" :key="item.id">
             <td style="width: 200px">
               <div style="height: 100px; background-size: cover; background-position: center"
-                   :style="{backgroundImage: `url(${item.imageUrl})`}" :ref="`productImage-${item.id}`"></div>
+                   :style="{backgroundImage: `url(${item.imageUrl})`}"></div>
             </td>
             <td>
               <a href="#" class="text-dark" @click.prevent="getProduct(item.id)">{{ item.title }}</a>
