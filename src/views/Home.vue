@@ -23,58 +23,19 @@ methods: {
     getProduct(id) {
       this.$router.push(`/user/product/${id}`);
     },
-     addCart(id) {
-  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-  this.status.loadingItem = id;
-
-  // 取得商品圖片與購物車位置
-  const productImg = this.$refs[`productImage-${id}`][0]; // 因為是 v-for，$refs 是 array
-  const cartEl = document.querySelector('.navbar-text[to="/user/cart"]');
-
-  if (productImg && cartEl) {
-    const imgClone = productImg.cloneNode(true);
-    const imgRect = productImg.getBoundingClientRect();
-    const cartRect = cartEl.getBoundingClientRect();
-
-    imgClone.style.position = 'fixed';
-    imgClone.style.top = `${imgRect.top}px`;
-    imgClone.style.left = `${imgRect.left}px`;
-    imgClone.style.width = `${imgRect.width}px`;
-    imgClone.style.height = `${imgRect.height}px`;
-    imgClone.style.zIndex = 1000;
-    imgClone.style.transition = 'all 1s ease-in-out';
-    imgClone.style.borderRadius = '10px';
-
-    document.body.appendChild(imgClone);
-
-    // 動畫觸發
-    requestAnimationFrame(() => {
-      imgClone.style.top = `${cartRect.top}px`;
-      imgClone.style.left = `${cartRect.left}px`;
-      imgClone.style.width = '0px';
-      imgClone.style.height = '0px';
-      imgClone.style.opacity = '0.5';
-    });
-
-    // 移除動畫物件
-    setTimeout(() => {
-      imgClone.remove();
-    }, 1000);
-  }
-
-  // 加入購物車邏輯
-  const cart = {
-    product_id: id,
-    qty: 1,
-  };
-
-  this.$http.post(url, { data: cart })
-    .then((res) => {
-      this.status.loadingItem = '';
-      console.log(res);
-      this.getCart();
-    });
-},
+   addCart(id){
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
+      this.status.loadingItem = id
+      const cart ={
+       product_id:id
+      ,qty:1,};
+      this.$http.post(url,{data:cart})
+      .then((res)=>{
+         this.status.loadingItem='';
+         console.log(res)
+         this.getCart();
+      });
+    },
 
     getCart(){
        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
