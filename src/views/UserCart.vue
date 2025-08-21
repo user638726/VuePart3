@@ -123,6 +123,8 @@
 </template>
 
 <script>
+
+import emitter from '@/methods/emitter';
 export default {
   data() {
     return {
@@ -167,6 +169,7 @@ export default {
       .then((res)=>{
          this.status.loadingItem='';
          console.log(res)
+         emitter.emit('update-cart');
          this.getCart();
       });
     },
@@ -199,6 +202,7 @@ export default {
       this.$http.delete(url).then((res) => {
        console.log('已刪除購物車商品:', res);
        this.status.loadingItem = '';
+       emitter.emit('update-cart');
        this.getCart(); // 重新取得購物車資料
      });
     },

@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import emitter from '@/methods/emitter';
 export default {
   data() {
     return {
@@ -101,7 +102,8 @@ export default {
       this.$http.post(url, { data: cart }).then((res) => {
         this.isLoading = false;
         console.log(res);
-        this.$httpMessageState(res, '加入購物車')
+        this.$httpMessageState(res, '加入購物車');
+        emitter.emit('update-cart');
         this.$router.push('/user/cart');
       });
     },
