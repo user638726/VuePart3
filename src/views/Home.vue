@@ -8,7 +8,12 @@ export default {
     status: {
       loadingItem: '',
     },
-  };
+    };
+},
+computed: {
+  cartQty() {
+    return this.cart.reduce((total, item) => total + item.qty, 0);
+  }
 },
 methods: {
     getProducts() {
@@ -23,29 +28,82 @@ methods: {
     getProduct(id) {
       this.$router.push(`/user/product/${id}`);
     },
-   addCart(id){
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`
-      this.status.loadingItem = id
-      const cart ={
-       product_id:id
-      ,qty:1,};
-      this.$http.post(url,{data:cart})
-      .then((res)=>{
-         this.status.loadingItem='';
-         console.log(res)
-         this.getCart();
-      });
-    },
+   addCart(id, event) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  this.status.loadingItem = id;
 
-    getCart(){
-       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-       this.isLoading = true;
-       this.$http.get(url).then((res)=>{
-        console.log(res);
-        this.cart = res.data.data;
-        this.isLoading = false;
-       });
-    },
+  const cart = {
+    product_id: id,
+    qty: 1,
+  };
+
+  // 飛行動畫：抓圖片 DOM 位置並開始動畫
+  const productImg = event.target.closest('tr').querySelector('div[style*="background-image"]');
+  const cartIcon = this.$refs.cartIcon;
+
+  if (productImg && cartIcon) {
+    const imgClone = productImg.cloneNode(true);
+    const imgRect = productImg.getBoundingClientRect();
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    imgClone.style.position = 'fixed';
+    imgClone.style.left = `${imgRect.left}px`;
+    imgClone.style.top = `${imgRect.top}px`;
+    imgClone.style.width = `${imgRect.width}px`;
+    imgClone.style.height = `${imgRect.height}px`;
+    imgClone.style.zIndex = 1000;
+    imgClone.style.transition = 'all 0.8s ease-in-out';
+
+    document.body.appendChild(imgClone);
+    setTimeout(() => {
+       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 200);
+    
+    requestAnimationFrame(() => {
+      imgClone.style.left = `${cartRect.left}px`;
+      imgClone.style.top = `${cartRect.top}px`;
+      imgClone.style.width = '0px';
+      imgClone.style.height = '0px';
+      imgClone.style.opacity = '0.5';
+    });
+
+    imgClone.addEventListener('transitionend', () => {
+      imgClone.remove();
+    });
+  }
+
+  // API 請求：加入購物車
+  this.$http.post(url, { data: cart })
+    .then((res) => {
+      console.log(res);
+      this.status.loadingItem = '';
+      this.getCart();
+    })
+    .catch(() => {
+      this.status.loadingItem = '';
+    });
+},
+
+
+    getCart() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  this.isLoading = true;
+  this.$http.get(url).then((res) => {
+    console.log('Cart API response:', res.data);
+    // 假設購物車清單在 res.data.data.carts 中
+    if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
+      this.cart = res.data.data.carts;
+    } else {
+      this.cart = [];
+    }
+    this.isLoading = false;
+  }).catch(() => {
+    this.cart = [];
+    this.isLoading = false;
+  });
+},
+
+
     scrollTo(id) {
     let el = document.getElementById(id);
     if (el) {
@@ -56,6 +114,7 @@ methods: {
 },
     mounted() {
   this.getProducts();
+  this.getCart();
 },
 
 
@@ -86,7 +145,16 @@ methods: {
           <a class="nav-link"  @click.prevent="scrollTo('products')">產品</a>
         </li>
       </ul>
-      <router-link class="navbar-text" to="/user/cart" style="margin-right: 0.5cm;">購物車</router-link>
+      <span ref="cartIcon" style="position: relative;">
+  <router-link class="navbar-text position-relative" to="/user/cart" style="margin-right: 0.5cm;">
+    購物車
+    <span v-if="cartQty > 0"
+          class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+      {{ cartQty }}
+    </span>
+  </router-link>
+</span>
+      
       <router-link class="navbar-text" to="/dashboard/products">後台管理</router-link>
       </div>
   </div>
@@ -166,7 +234,7 @@ methods: {
                 </button>
                 <button type="button" class="btn btn-outline-danger"
                         :disabled="status.loadingItem === item.id"
-                        @click="addCart(item.id)">
+                        @click="addCart(item.id, $event)">
                   <div v-if="status.loadingItem === item.id"
                        class="spinner-grow text-danger spinner-grow-sm" role="status">
                     <span class="visually-hidden">Loading...</span>
