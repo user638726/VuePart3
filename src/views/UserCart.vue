@@ -192,6 +192,7 @@ export default {
       };
       this.$http.put(url,{data:cart}).then((res)=>{
             console.log(res);
+            emitter.emit('update-cart');
             this.status.loadingItem = '';
          this.getCart();   
       });
@@ -223,8 +224,10 @@ export default {
       this.$http.post(url,{data:order})
       .then((res)=>{
             console.log(res);
+            emitter.emit('update-cart');
             const orderId = res.data.orderId; // 從 API 回傳中取得 orderId
             this.$router.push(`/user/checkout/${orderId}`);
+            
       });
     },
   },
