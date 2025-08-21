@@ -12,7 +12,7 @@
         <h2>{{ product.title }}</h2>
         <div>{{ product.content }}</div>
         <div>{{ product.description }}</div>
-        <img :src="product.imageUrl" alt="" class="img-fluid mb-3">
+        <img :src="product.imageUrl" alt="" class="img-fluid mb-3" ref="productImage">
         <div class="accordion" id="accordionExample">
   <div class="accordion-item">
     <h2 class="accordion-header">
@@ -101,7 +101,7 @@ export default {
       this.$http.post(url, { data: cart }).then((res) => {
         this.isLoading = false;
         console.log(res);
-        this.$httpMessageState(res, '加入購物車');
+        this.$httpMessageState(res, '加入購物車')
         this.$router.push('/user/cart');
       });
     },
