@@ -13,6 +13,7 @@
           <a href="#" @click.prevent="logout" class="nav-link">登出</a>
         </div>
     </div>
+    <RouterLink class="navbar-brand" to="/">首頁</RouterLink>
   </div>
 </nav>
 </template>
@@ -26,7 +27,7 @@ export default {
       .then((res)=>{
         if(res.data.success) {
           console.log(res);
-          this.$router.push('/login');          
+          this.$router.push('/');          
         }
       });
     },

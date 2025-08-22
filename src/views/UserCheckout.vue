@@ -51,7 +51,7 @@
         </tbody>
       </table>
       <div class="text-end" v-if="order.is_paid === false">
-        <button class="btn btn-danger">確認付款去</button>
+        <button class="btn btn-dark">確認付款去</button>
       </div>
     </form>
   </div>
@@ -86,9 +86,13 @@ export default {
       this.$http.post(url)
         .then((res) => {
           console.log(res);
+
           if (res.data.success) {
             this.getOrder();
           }
+          setTimeout(() => {
+            this.$router.push(`/`);
+          }, 15000);
         });
     },
   },
