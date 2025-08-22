@@ -130,6 +130,7 @@ export default {
     return {
       products: [],
       product: {},
+      isLoading: false, 
       status: {
         loadingItem: '',
       },
@@ -214,9 +215,16 @@ export default {
     };
     this.$http.post(url,{data:coupon})
       .then((res)=>{
+        if (!res.data.success) {
+        alert(res.data.message || '優惠碼無效或已過期');
+        return;
+      }
          console.log(res)
          this.getCart();
-      });
+      }).catch((error)=>{
+     const errorMessage = error?.response?.data?.message || '優惠碼無效或已過期';
+     alert(errorMessage);
+  });
     },
     createOrder(){
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
