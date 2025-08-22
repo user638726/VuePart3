@@ -245,8 +245,8 @@ methods: {
             <span v-if="status.loadingItem === item.id"
               class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true">
             </span>
-  <span v-else>加到購物車</span>
-</button>
+            <span v-else>加到購物車</span>
+            </button>
 
           </div>
         </div>
