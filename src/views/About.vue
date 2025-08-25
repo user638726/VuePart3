@@ -27,22 +27,16 @@ methods: {
     getProduct(id) {
       this.$router.push(`/user/product/${id}`);
     },
-   addCart(id, event) {
-  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-  this.status.loadingItem = id;
+    animateToCart(event) {
+    const productCard = event.target.closest('.card');
+    const productImg = productCard?.querySelector('.card-img-top');
+    const cartIcon = this.$refs.cartIcon;
 
-  const cart = {
-    product_id: id,
-    qty: 1,
-  };
+    if (!productImg || !cartIcon) {
+      console.warn('動畫失敗：無法找到圖片或購物車圖示');
+      return;
+    }
 
-  // 🎯 修正這裡：從卡片中找圖片
-  const productCard = event.target.closest('.card');
-  const productImg = productCard?.querySelector('.card-img-top');
-  const cartIcon = this.$refs.cartIcon;
-
-  // 🛡️ 動畫執行前的防呆判斷
-  if (productImg && cartIcon) {
     const imgClone = productImg.cloneNode(true);
     const imgRect = productImg.getBoundingClientRect();
     const cartRect = cartIcon.getBoundingClientRect();
@@ -57,7 +51,6 @@ methods: {
 
     document.body.appendChild(imgClone);
 
-    // 動畫起飛
     requestAnimationFrame(() => {
       imgClone.style.left = `${cartRect.left}px`;
       imgClone.style.top = `${cartRect.top}px`;
@@ -66,28 +59,32 @@ methods: {
       imgClone.style.opacity = '0.5';
     });
 
-    // 動畫結束後移除
     imgClone.addEventListener('transitionend', () => {
       imgClone.remove();
     });
-  } else {
-    console.warn('動畫失敗：無法找到圖片或購物車圖示');
-  }
-
-  // 📦 加入購物車 API 請求
-  this.$http.post(url, { data: cart })
-    .then(() => {
-      this.status.loadingItem = '';
-      this.getCart();
-    })
-    .catch(() => {
-      this.status.loadingItem = '';
-      alert('加入購物車失敗，請稍後再試');
-    });
   },
+  addCart(id, event) {
+    const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+    this.status.loadingItem = id;
 
+    const cart = {
+      product_id: id,
+      qty: 1,
+    };
 
-    getCart() {
+    this.animateToCart(event);
+
+    this.$http.post(url, { data: cart })
+      .then(() => {
+        this.status.loadingItem = '';
+        this.getCart();
+      })
+      .catch(() => {
+        this.status.loadingItem = '';
+        alert('加入購物車失敗，請稍後再試');
+      });
+  },
+  getCart() {
   const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
   this.isLoading = true;
   this.$http.get(url).then((res) => {
@@ -127,9 +124,6 @@ methods: {
           <router-link class="nav-link" to="/about">關於</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/philosophy">理念</router-link>
-        </li>
-        <li class="nav-item">
           <router-link class="nav-link" to="/frontproducts">產品</router-link>
         </li>
       </ul>
@@ -145,12 +139,25 @@ methods: {
       </div>
   </div>
 </nav>
-<main class="flex-grow-1 mt-5">
+<main class="flex-grow-1 mt-5 pb-5">
   <div class="card bg-dark text-black" id="basketball1">
-  <img :src="require('@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg')" class="card-img" alt="...">
+  <img :src="require('@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg')" class="card-img" alt="籃球圖片">
   <div class="card-img-overlay">
     <h5 class="card-title">關於籃球瘋</h5>
-    <p class="card-text">「籃球瘋」不只是名詞，是一種生活態度。我們相信籃球能連結人與人、城市與夢想。從街頭到球場，從素人到職業，我們支持每一位為夢想努力的球員。歡迎加入我們，一起為籃球而瘋</p>
+    <p class="card-text">「籃球瘋」不只是名詞，是一種生活態度。</p>
+    <p class="card-text">我們相信籃球能連結人與人、城市與夢想。</p>
+    <p class="card-text">從街頭到球場，從素人到職業，</p>
+    <p class="card-text">我們支持每一位為夢想努力的球員。</p>
+    <p class="card-text">歡迎加入我們，一起為籃球而瘋</p>
+  </div>
+</div>
+<div class="card bg-dark text-black" id="basketball2">
+  <img :src="require('@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg')" class="card-img" alt="籃球理念圖">
+  <div class="card-img-overlay">
+    <h5 class="card-title">籃球瘋介紹</h5>
+    <p class="card-text">我們相信籃球是一種語言，無需翻譯，卻能跨越文化與年齡。</p>
+    <p class="card-text">無論你是初學者還是老手，在這裡都能找到屬於自己的位置。</p>
+    <p class="card-text">我們致力於打造一個熱血、自由、且共融的籃球文化圈。</p>
   </div>
 </div>
 </main>
@@ -166,16 +173,61 @@ methods: {
   width: 100%;
   z-index: 999;
 }
+
 .card-img-overlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 2em;
+  background-color: rgba(255, 255, 255, 0.75);
+  padding: 1em 2em 1.5em 2em; /* 上右下左 */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  word-break: break-word;
 }
+
 .card-title {
   font-size: clamp(1.5rem, 5vw, 3rem);
+  margin-top: 0; /* 移除預設間距 */
 }
 
 .card-text {
   font-size: clamp(1rem, 3vw, 2rem);
+  line-height: 1.5;
 }
 
+.card-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #FFFFE0;
+}
+
+body {
+  background-color: #FFFFE0;
+}
+
+#basketball1,
+#basketball2 {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+/* 🔁 手機 RWD 調整 */
+@media (max-width: 576px) {
+  .card-img-overlay {
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1em;
+    height: auto;
+  }
+
+  .card-img {
+    max-height: none;
+    height: auto;
+  }
+}
 </style>

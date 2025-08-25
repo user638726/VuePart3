@@ -27,22 +27,16 @@ methods: {
     getProduct(id) {
       this.$router.push(`/user/product/${id}`);
     },
-   addCart(id, event) {
-  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-  this.status.loadingItem = id;
+    animateToCart(event) {
+    const productCard = event.target.closest('.card');
+    const productImg = productCard?.querySelector('.card-img-top');
+    const cartIcon = this.$refs.cartIcon;
 
-  const cart = {
-    product_id: id,
-    qty: 1,
-  };
+    if (!productImg || !cartIcon) {
+      console.warn('動畫失敗：無法找到圖片或購物車圖示');
+      return;
+    }
 
-  // 🎯 修正這裡：從卡片中找圖片
-  const productCard = event.target.closest('.card');
-  const productImg = productCard?.querySelector('.card-img-top');
-  const cartIcon = this.$refs.cartIcon;
-
-  // 🛡️ 動畫執行前的防呆判斷
-  if (productImg && cartIcon) {
     const imgClone = productImg.cloneNode(true);
     const imgRect = productImg.getBoundingClientRect();
     const cartRect = cartIcon.getBoundingClientRect();
@@ -57,8 +51,6 @@ methods: {
 
     document.body.appendChild(imgClone);
 
-    // optional：視覺效果（滑到上方）
-    // 動畫起飛
     requestAnimationFrame(() => {
       imgClone.style.left = `${cartRect.left}px`;
       imgClone.style.top = `${cartRect.top}px`;
@@ -67,26 +59,31 @@ methods: {
       imgClone.style.opacity = '0.5';
     });
 
-    // 動畫結束後移除
     imgClone.addEventListener('transitionend', () => {
       imgClone.remove();
     });
-  } else {
-    console.warn('動畫失敗：無法找到圖片或購物車圖示');
-  }
-
-  // 📦 加入購物車 API 請求
-  this.$http.post(url, { data: cart })
-    .then(() => {
-      this.status.loadingItem = '';
-      this.getCart();
-    })
-    .catch(() => {
-      this.status.loadingItem = '';
-      alert('加入購物車失敗，請稍後再試');
-    });
   },
+  addCart(id, event) {
+    const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+    this.status.loadingItem = id;
 
+    const cart = {
+      product_id: id,
+      qty: 1,
+    };
+
+    this.animateToCart(event);
+
+    this.$http.post(url, { data: cart })
+      .then(() => {
+        this.status.loadingItem = '';
+        this.getCart();
+      })
+      .catch(() => {
+        this.status.loadingItem = '';
+        alert('加入購物車失敗，請稍後再試');
+      });
+  },
 
     getCart() {
   const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
@@ -127,9 +124,6 @@ methods: {
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <router-link class="nav-link" to="/about">關於</router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/philosophy">理念</router-link>
         </li>
         <li class="nav-item">
           <router-link class="nav-link" to="/frontproducts">產品</router-link>
@@ -175,11 +169,11 @@ a {
 
 html {
   scroll-behavior: smooth;
-  background-color: #00C853;
+  background-color: #FFFFE0;
 }
 
 body {
-  background-color: #00C853;
+  background-color: #FFFFE0;
 }
 .footer-fixed {
   position: fixed;
