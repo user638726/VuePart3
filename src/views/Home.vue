@@ -147,12 +147,12 @@ methods: {
       {{ cartQty }}
     </span>
   </router-link>
-</span>
+      </span>
       </div>
   </div>
 </nav>
 <main class="flex-grow-1 mt-5">
-   <div class="container py-4">
+<div class="container py-4">
   <div class="row align-items-center">
     <div class="col-md-6">
       <h1>歡迎來到籃球瘋</h1>
@@ -176,20 +176,11 @@ methods: {
 a {
   text-decoration:none;
 }
-.card-title {
-  font-size: clamp(1.5rem, 5vw, 3rem);
-}
 
-.card-text {
-  font-size: clamp(1rem, 3vw, 2rem);
-}
 html {
   scroll-behavior: smooth;
 }
-.card-img-overlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 2em;
-}
+
 .footer-fixed {
   position: fixed;
   bottom: 0;

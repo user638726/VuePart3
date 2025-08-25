@@ -159,4 +159,28 @@ methods: {
   </div>
 </div>
 </main>
+<footer class="footer-fixed bg-dark text-white text-center py-3">
+  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
+</footer>
 </template>
+
+<style>
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+}
+.card-img-overlay {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 2em;
+}
+.card-title {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+.card-text {
+  font-size: clamp(1rem, 3vw, 2rem);
+}
+
+</style>
