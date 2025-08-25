@@ -208,6 +208,14 @@ methods: {
 .text-muted {
   font-size: 16px;
 }
+html {
+  scroll-behavior: smooth;
+  background-color: #FFFFE0;
+}
+
+body {
+  background-color: #FFFFE0;
+}
 
 
 </style>
