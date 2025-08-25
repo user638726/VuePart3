@@ -128,9 +128,6 @@ methods: {
           <router-link class="nav-link" to="/about">關於</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/philosophy">理念</router-link>
-        </li>
-        <li class="nav-item">
           <router-link class="nav-link" to="/frontproducts">產品</router-link>
         </li>
       </ul>
