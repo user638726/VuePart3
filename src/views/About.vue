@@ -21,7 +21,6 @@ methods: {
       this.isLoading = true;
       this.$http.get(url).then((response) => {
         this.products = response.data.products;
-        console.log('products:', response);
         this.isLoading = false;
       });
     },
@@ -77,13 +76,11 @@ methods: {
 
   // 📦 加入購物車 API 請求
   this.$http.post(url, { data: cart })
-    .then((res) => {
-      console.log('已加入購物車', res);
+    .then(() => {
       this.status.loadingItem = '';
       this.getCart();
     })
-    .catch((err) => {
-      console.error('加入購物車失敗', err);
+    .catch(() => {
       this.status.loadingItem = '';
       alert('加入購物車失敗，請稍後再試');
     });
@@ -94,7 +91,6 @@ methods: {
   const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
   this.isLoading = true;
   this.$http.get(url).then((res) => {
-    console.log('Cart API response:', res.data);
     // 假設購物車清單在 res.data.data.carts 中
     if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
       this.cart = res.data.data.carts;

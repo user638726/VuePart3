@@ -21,7 +21,6 @@ methods: {
       this.isLoading = true;
       this.$http.get(url).then((response) => {
         this.products = response.data.products;
-        console.log('products:', response);
         this.isLoading = false;
       });
     },
@@ -78,13 +77,11 @@ methods: {
 
   // 📦 加入購物車 API 請求
   this.$http.post(url, { data: cart })
-    .then((res) => {
-      console.log('已加入購物車', res);
+    .then(() => {
       this.status.loadingItem = '';
       this.getCart();
     })
-    .catch((err) => {
-      console.error('加入購物車失敗', err);
+    .catch(() => {
       this.status.loadingItem = '';
       alert('加入購物車失敗，請稍後再試');
     });
@@ -95,7 +92,6 @@ methods: {
   const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
   this.isLoading = true;
   this.$http.get(url).then((res) => {
-    console.log('Cart API response:', res.data);
     // 假設購物車清單在 res.data.data.carts 中
     if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
       this.cart = res.data.data.carts;
@@ -157,10 +153,10 @@ methods: {
     <div class="col-md-6">
       <h1>歡迎來到籃球瘋</h1>
       <p>這裡是最強的籃球訓練平台！</p>
-      <button class="btn btn-primary" @click="$router.push('/frontproducts')">立即選購</button>
+      <button class="btn" style="background-color: #212121; color: white;" @click="$router.push('/frontproducts')">立即選購</button>
     </div>
     <div class="col-md-6 text-end">
-      <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖">
+      <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖" style="padding-top:12px">
     </div>
   </div>
 </div>
@@ -179,8 +175,12 @@ a {
 
 html {
   scroll-behavior: smooth;
+  background-color: #00C853;
 }
 
+body {
+  background-color: #00C853;
+}
 .footer-fixed {
   position: fixed;
   bottom: 0;
