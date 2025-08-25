@@ -58,7 +58,6 @@ methods: {
 
     document.body.appendChild(imgClone);
 
-    // optional：視覺效果（滑到上方）
     // 動畫起飛
     requestAnimationFrame(() => {
       imgClone.style.left = `${cartRect.left}px`;
@@ -107,7 +106,7 @@ methods: {
     this.cart = [];
     this.isLoading = false;
   });
-},
+  },
 },
     mounted() {
   this.getProducts();
@@ -116,8 +115,8 @@ methods: {
 
 
 };
-
 </script>
+
 
 <template>
 <Loading :active="isLoading"></Loading>
@@ -152,48 +151,12 @@ methods: {
   </div>
 </nav>
 <main class="flex-grow-1 mt-5">
-   <div class="container py-4">
-  <div class="row align-items-center">
-    <div class="col-md-6">
-      <h1>歡迎來到籃球瘋</h1>
-      <p>這裡是最強的籃球訓練平台！</p>
-      <button class="btn btn-primary" @click="$router.push('/frontproducts')">立即選購</button>
-    </div>
-    <div class="col-md-6 text-end">
-      <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖">
-    </div>
+<div class="card bg-dark text-black" id="basketball2">
+  <img :src="require('@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg')" class="card-img" alt="籃球理念圖">
+  <div class="card-img-overlay">
+    <h5 class="card-title">籃球瘋理念</h5>
+    <p class="card-text">我們相信籃球是一種語言，無需翻譯，卻能跨越文化與年齡。無論你是初學者還是老手，在這裡都能找到屬於自己的位置。我們致力於打造一個熱血、自由、且共融的籃球文化圈。</p>
   </div>
 </div>
 </main>
-
-
-<footer class="footer-fixed bg-dark text-white text-center py-3">
-  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
-</footer>
 </template>
-
-<style>
-a {
-  text-decoration:none;
-}
-.card-title {
-  font-size: clamp(1.5rem, 5vw, 3rem);
-}
-
-.card-text {
-  font-size: clamp(1rem, 3vw, 2rem);
-}
-html {
-  scroll-behavior: smooth;
-}
-.card-img-overlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 2em;
-}
-.footer-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 999;
-}
-</style>

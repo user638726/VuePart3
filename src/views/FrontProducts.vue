@@ -58,7 +58,6 @@ methods: {
 
     document.body.appendChild(imgClone);
 
-    // optional：視覺效果（滑到上方）
     // 動畫起飛
     requestAnimationFrame(() => {
       imgClone.style.left = `${cartRect.left}px`;
@@ -107,7 +106,7 @@ methods: {
     this.cart = [];
     this.isLoading = false;
   });
-},
+  },
 },
     mounted() {
   this.getProducts();
@@ -116,8 +115,8 @@ methods: {
 
 
 };
-
 </script>
+
 
 <template>
 <Loading :active="isLoading"></Loading>
@@ -151,49 +150,51 @@ methods: {
       </div>
   </div>
 </nav>
-<main class="flex-grow-1 mt-5">
-   <div class="container py-4">
-  <div class="row align-items-center">
-    <div class="col-md-6">
-      <h1>歡迎來到籃球瘋</h1>
-      <p>這裡是最強的籃球訓練平台！</p>
-      <button class="btn btn-primary" @click="$router.push('/frontproducts')">立即選購</button>
-    </div>
-    <div class="col-md-6 text-end">
-      <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖">
+<main class="flex-grow-1" style="padding-top: 80px;">
+<section class="container my-5" id="products">
+  <h2 class="text-center mb-4">熱賣產品</h2>
+  <div class="row">
+    <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
+      <div class="card h-100">
+        <div
+          class="card-img-top"
+          :style="{
+            height: '200px',
+            backgroundImage: `url(${item.imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }"
+        ></div>
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ item.title }}</h5>
+          <p class="card-text mb-2">
+            <span v-if="item.price">
+              <del class="text-muted">原價 {{ item.origin_price }} 元</del><br>
+              <span class="h5 text-danger">特價 {{ item.price }} 元</span>
+            </span>
+            <span v-else>
+              <span class="h5">{{ item.origin_price }} 元</span>
+            </span>
+          </p>
+          <div class="mt-auto">
+            <button type="button" class="btn btn-outline-secondary btn-sm me-2" @click="getProduct(item.id)">
+              查看更多
+            </button>
+            <button type="button"
+              class="btn btn-dark btn-sm"
+              :disabled="status.loadingItem === item.id"
+              @click="addCart(item.id, $event)">
+            <span v-if="status.loadingItem === item.id"
+              class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true">
+            </span>
+            <span v-else>加到購物車</span>
+            </button>
+
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-</main>
-
-
-<footer class="footer-fixed bg-dark text-white text-center py-3">
-  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
-</footer>
+</section>
+</main> 
 </template>
-
-<style>
-a {
-  text-decoration:none;
-}
-.card-title {
-  font-size: clamp(1.5rem, 5vw, 3rem);
-}
-
-.card-text {
-  font-size: clamp(1rem, 3vw, 2rem);
-}
-html {
-  scroll-behavior: smooth;
-}
-.card-img-overlay {
-  background-color: rgba(255, 255, 255, 0.7);
-  padding: 2em;
-}
-.footer-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 999;
-}
-</style>
