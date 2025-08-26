@@ -46,7 +46,7 @@ export default {
 
         allData.forEach(dataArray => {
           dataArray.forEach(item => {
-            if (item.postInfo?.title) {
+            if (item.postInfo?.title && item.postInfo.title !== "unknown"  ) {
               this.posts.push(item)
             }
           })
