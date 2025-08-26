@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="title-list-container">
     <h2>最新消息</h2>
     <ul>
       <li v-for="(post, index) in posts" :key="index">
@@ -88,4 +88,9 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.title-list-container {
+  margin-bottom: 100px; /* 根據實際需要調整距離 */
+}
+
 </style>
