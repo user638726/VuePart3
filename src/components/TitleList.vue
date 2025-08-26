@@ -90,7 +90,7 @@ a:hover {
 }
 
 .title-list-container {
-  margin-bottom: 100px; /* 根據實際需要調整距離 */
+  margin-bottom: 70px; /* 根據實際需要調整距離 */
 }
 
 </style>

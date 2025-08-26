@@ -1,6 +1,6 @@
 <script>
 import TitleList from '@/components/TitleList.vue'
-
+import ProductCarousel from '@/components/ProductCarousel.vue'
 export default {
   data() {
   return {
@@ -18,7 +18,8 @@ computed: {
   }
 },
 components: {
-    TitleList
+    TitleList,
+    ProductCarousel,
   },
 methods: {
     getProducts() {
@@ -158,11 +159,13 @@ methods: {
       <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖" style="padding-top:12px">
     </div>
     <div class="col-md-6">
-      <ul><TitleList /></ul>
+      <TitleList />
     </div>
-  
-  
-  </div>
+    <div class="col-md-6">
+      <h1 class="text-center">熱賣產品</h1>
+      <ProductCarousel v-if="products.length" :products="products" @add-to-cart="(id, $event) => addCart(id, $event)" @card-click="getProduct" />
+    </div>
+    </div>
 </div>
 </main>
 
