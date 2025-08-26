@@ -1,4 +1,6 @@
 <script>
+import TitleList from '@/components/TitleList.vue'
+
 export default {
   data() {
   return {
@@ -15,6 +17,9 @@ computed: {
     return this.cart.reduce((total, item) => total + item.qty, 0);
   }
 },
+components: {
+    TitleList
+  },
 methods: {
     getProducts() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
@@ -152,6 +157,11 @@ methods: {
     <div class="col-md-6 text-end">
       <img :src="require('@/assets/picture/basketballpart1.png')" class="img-fluid" alt="籃球首頁圖" style="padding-top:12px">
     </div>
+    <div class="col-md-6">
+      <ul><TitleList /></ul>
+    </div>
+  
+  
   </div>
 </div>
 </main>
