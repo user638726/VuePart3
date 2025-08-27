@@ -76,7 +76,7 @@ export default {
 
 <style scoped>
 .product-card {
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: transform 0.5s, box-shadow 0.5s;
 }
 
 .product-card:hover {

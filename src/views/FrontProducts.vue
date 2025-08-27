@@ -8,12 +8,26 @@ export default {
     status: {
       loadingItem: '',
     },
+    categories: [
+      {
+        name: '籃球',
+        subcategories: ['攻擊', '防守'],
+      }
+      ], // <-- 可改成你的實際分類
+    selectedCategory: ''
     };
 },
 computed: {
   cartQty() {
     return this.cart.reduce((total, item) => total + item.qty, 0);
-  }
+  },
+  filteredProducts() {
+    if (!this.selectedCategory) return this.products;
+    // 根據商品標題是否包含分類關鍵字進行篩選（不區分大小寫）
+    return this.products.filter(product =>
+      product.title.toLowerCase().includes(this.selectedCategory.toLowerCase())
+    );
+  },
 },
 methods: {
     getProducts() {
@@ -101,6 +115,9 @@ methods: {
     this.isLoading = false;
   });
   },
+  formatCurrency(num) {
+    return `NT$ ${Number(num).toLocaleString()}`;
+  }
 },
     mounted() {
   this.getProducts();
@@ -141,53 +158,79 @@ methods: {
       </div>
   </div>
 </nav>
-<main class="flex-grow-1" style="padding-top: 80px;">
-<section class="container my-5" id="products">
-  <h2 class="text-center mb-4">熱賣產品</h2>
+<div class="container" style="padding-top: 80px;">
   <div class="row">
-    <div class="col-md-4 mb-4" v-for="item in products" :key="item.id">
-      <div class="card h-100">
-        <div
-          class="card-img-top"
-          :style="{
-            height: '200px',
-            backgroundImage: `url(${item.imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }"
-        ></div>
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ item.title }}</h5>
-          <p class="card-text mb-2">
-            <span v-if="item.price">
-              <del class="text-muted">原價 {{ item.origin_price }} 元</del><br>
-              <span class="h5 text-danger">特價 {{ item.price }} 元</span>
-            </span>
-            <span v-else>
-              <span class="h5">{{ item.origin_price }} 元</span>
-            </span>
-          </p>
-          <div class="mt-auto">
-            <button type="button" class="btn btn-outline-secondary btn-sm me-2" @click="getProduct(item.id)">
-              查看更多
-            </button>
-            <button type="button"
-              class="btn btn-dark btn-sm"
-              :disabled="status.loadingItem === item.id"
-              @click="addCart(item.id, $event)">
-            <span v-if="status.loadingItem === item.id"
-              class="spinner-border spinner-border-sm text-light" role="status" aria-hidden="true">
-            </span>
-            <span v-else>加到購物車</span>
-            </button>
+    <!-- 左側：商品分類 -->
+<div class="col-md-3 mb-4">
+  <div class="p-3 bg-white shadow-sm rounded">
+    <h5 class="mb-3">商品分類</h5>
 
-          </div>
-        </div>
+    <div v-for="mainCategory in categories" :key="mainCategory.name">
+      <strong>{{ mainCategory.name }}</strong>
+      <div class="d-flex flex-wrap mt-2">
+        <button
+          v-for="sub in mainCategory.subcategories"
+          :key="sub"
+          @click="selectedCategory = sub"
+          class="category-btn"
+          :class="{ active: selectedCategory === sub }"
+        >
+          {{ sub }}
+        </button>
       </div>
     </div>
+
+    <button class="btn btn-outline-secondary btn-sm mt-4 w-100" @click="selectedCategory = ''">
+      清除篩選
+    </button>
   </div>
-</section>
-</main> 
+</div>
+<div class="col-md-9">
+      <main style="padding-bottom: 100px;">
+        <section id="products">
+          <h2 class="text-center mb-4">全部商品</h2>
+          <div class="row">
+            <div class="col-md-4 mb-4" v-for="item in filteredProducts" :key="item.id">
+              <div class="card h-100" @click="getProduct(item.id)">
+                <div
+                  class="card-img-top"
+                  :style="{
+                    height: '200px',
+                    backgroundImage: `url(${item.imageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                  }"
+                ></div>
+                <div class="card-body d-flex flex-column">
+                  <h5 class="card-title">{{ item.title }}</h5>
+                  <p class="card-text mb-2">
+                    <span v-if="item.price">
+                      <del class="text-muted">原價 {{ formatCurrency(item.origin_price) }}</del><br>
+                      <span class="h5 text-danger">特價 {{ formatCurrency(item.price) }}</span>
+                    </span>
+                    <span v-else>
+                      <span class="h5">{{ formatCurrency(item.origin_price) }}</span>
+                    </span>
+                  </p>
+                  <div class="mt-auto">
+                    <button type="button"
+                            class="btn btn-dark btn-sm"
+                            :disabled="status.loadingItem === item.id"
+                            @click.stop="addCart(item.id, $event)">
+                      <span v-if="status.loadingItem === item.id"
+                            class="spinner-border spinner-border-sm text-light" role="status"></span>
+                      <span v-else>加到購物車</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+</div>
+</div>
 <footer class="footer-fixed bg-dark text-white text-center py-3">
   <p>&copy; 2025 籃球瘋. All rights reserved.</p>
 </footer>
@@ -214,6 +257,34 @@ html {
 body {
   background-color: #FFFFE0;
 }
+.card {
+  cursor: pointer;
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.category-btn {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  padding: 8px 16px;
+  margin: 5px 5px 0 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
 
+.category-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.category-btn.active {
+  background-color: #343a40;
+  color: #fff;
+  border-color: #343a40;
+}
 
 </style>
