@@ -235,6 +235,13 @@ export default {
       });
     },
   },
+  mounted() {
+  emitter.on('update-cart', this.getCart);
+  },
+  beforeUnmount() {
+  emitter.off('update-cart', this.getCart);
+  },
+
   created() {
     Swal.fire({
     icon: 'info',
@@ -271,4 +278,5 @@ body {
   width: 100%;
   z-index: 999;
 }
+
 </style>
