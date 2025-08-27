@@ -19,7 +19,7 @@
         <div class="card-body text-center">
           <h5 class="card-title">{{ item.title }}</h5>
           <p class="card-text">{{ item.description }}</p>
-          <p class="text-danger fw-bold">NT$ {{ item.price.toLocaleString() }}</p>
+          <p class="text-danger fw-bold">{{ formatCurrency(item.price) }}</p>
           <button
             class="btn btn-dark"
             @click.stop="$emit('add-to-cart', item.id, $event)"
@@ -67,7 +67,11 @@ export default {
   setTimeout(() => {
     this.$emit('card-click', id);
     this.activeCardId = null; // 清除 hover 樣式
-  }, 5000);
+  }, 3000);
+  },
+  formatCurrency(num) {
+    const safeNum = Number(num) || 0;
+    return `NT$ ${safeNum.toLocaleString()}`;
   },
 },
 

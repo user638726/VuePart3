@@ -60,7 +60,7 @@
             </tfoot>
           </table>
           <div class="input-group mb-3 input-group-sm">
-            <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼:GOATM，就可以享有50%折扣優惠">
+            <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼:GOATM">
             <div class="input-group-append">
               <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
                 套用優惠碼
@@ -110,7 +110,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="message" class="form-label">留言</label>
+          <label for="message" class="form-label">留言[選填]</label>
           <textarea name="" id="message" class="form-control" cols="30" rows="10"
                     v-model="form.message"></textarea>
         </div>

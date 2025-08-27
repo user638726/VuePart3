@@ -53,9 +53,9 @@
 </div>
       </article>
       <div class="col-4">
-        <div class="h5" v-if="!product.price">{{ product.origin_price }} 元</div>
-        <del class="h6" v-if="product.price">原價 {{ product.origin_price }} 元</del>
-        <div class="h5" v-if="product.price">現在只要 {{ product.price }} 元</div>
+        <div class="h5" v-if="!product.price">{{ formatCurrency(product.origin_price) }} 元</div>
+        <del class="h6" v-if="product.price">原價 {{ formatCurrency(product.origin_price) }} 元</del>
+        <div class="h5" v-if="product.price">現在只要 {{ formatCurrency(product.price) }} 元</div>
         <hr>
         <button type="button" class="btn btn-outline-danger"
                 @click="addToCart(product.id)">
@@ -68,6 +68,9 @@
     </div>
     
   </div>
+  <footer class="footer-fixed bg-dark text-white text-center py-3">
+  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
+</footer>
 </template>
 
 <script>
@@ -105,6 +108,10 @@ export default {
         this.$router.push('/user/cart');
       });
     },
+    formatCurrency(num) {
+    const safeNum = Number(num) || 0;
+    return `NT$ ${safeNum.toLocaleString()}`;
+    },
   },
   created() {
     this.id = this.$route.params.productId;
@@ -112,3 +119,24 @@ export default {
   },
 };
 </script>
+
+<style>
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+}
+html {
+  scroll-behavior: smooth;
+  background-color: #FFFFE0;
+}
+
+body {
+  background-color: #FFFFE0;
+}
+
+
+
+
+</style>

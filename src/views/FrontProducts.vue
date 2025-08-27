@@ -14,7 +14,9 @@ export default {
         subcategories: ['攻擊', '防守'],
       }
       ], // <-- 可改成你的實際分類
-    selectedCategory: ''
+    selectedCategory: '',
+    activeCardId: null,
+    hoverTimeout: null,
     };
 },
 computed: {
@@ -76,6 +78,18 @@ methods: {
     imgClone.addEventListener('transitionend', () => {
       imgClone.remove();
     });
+  },
+  handleCardClick(id) {
+    // 如果點的是不同卡片，清除之前的 timeout 並重新 hover
+    if (this.activeCardId !== id) {
+      clearTimeout(this.hoverTimeout);
+      this.activeCardId = id;
+
+      // 等待 3000ms 再跳轉頁面
+      this.hoverTimeout = setTimeout(() => {
+        this.getProduct(id);
+      }, 3000);
+    }
   },
   addCart(id, event) {
     const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
@@ -191,7 +205,8 @@ methods: {
           <h2 class="text-center mb-4">全部商品</h2>
           <div class="row">
             <div class="col-md-4 mb-4" v-for="item in filteredProducts" :key="item.id">
-              <div class="card h-100" @click="getProduct(item.id)">
+              <div class="card h-100" :class="{ active: activeCardId === item.id }"
+                                       @click="handleCardClick(item.id)">
                 <div
                   class="card-img-top"
                   :style="{
@@ -261,7 +276,8 @@ body {
   cursor: pointer;
   transition: transform 0.5s ease, box-shadow 0.5s ease;
 }
-.card:hover {
+.card:hover,
+.card.active {
   transform: translateY(-5px) scale(1.02);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
