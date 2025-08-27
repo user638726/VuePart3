@@ -1,10 +1,10 @@
 <template>
   <Loading :active="isLoading"></Loading>
-  <div class="container">
+  <div class="container" style="padding-top: 70px;">
     <div class="row mt-4">
       
       <!-- 購物車列表 -->
-       <div class="col-md-5">
+       <div class="col-md-5 mx-auto">
         <div class="sticky-top">
           <table class="table align-middle">
             <thead>
@@ -43,7 +43,7 @@
                 </td>
                 <td class="text-end">
                   <small v-if="cart.final_total !== cart.total" class="text-success">折扣價：</small>
-                  {{ $filters.currency(item.final_total) }}
+                  NT$ {{ $filters.currency(item.final_total) }}
                 </td>
               </tr>
             </template>
@@ -51,11 +51,11 @@
             <tfoot>
             <tr>
               <td colspan="3" class="text-end">總計</td>
-              <td class="text-end">{{ $filters.currency(cart.total) }}</td>
+              <td class="text-end">NT$ {{ $filters.currency(cart.total) }}</td>
             </tr>
             <tr v-if="cart.final_total !== cart.total">
               <td colspan="3" class="text-end text-success">折扣價</td>
-              <td class="text-end text-success">{{ $filters.currency(cart.final_total) }}</td>
+              <td class="text-end text-success">NT$ {{ $filters.currency(cart.final_total) }}</td>
             </tr>
             </tfoot>
           </table>
@@ -120,10 +120,13 @@
       </Form>
     </div>
   </div>
+  <footer class="footer-fixed bg-dark text-white text-center py-3">
+  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
+</footer>
 </template>
 
 <script>
-
+import Swal from 'sweetalert2'
 import emitter from '@/methods/emitter';
 export default {
   data() {
@@ -153,7 +156,6 @@ export default {
       this.isLoading = true;
       this.$http.get(url).then((response) => {
         this.products = response.data.products;
-        console.log('products:', response);
         this.isLoading = false;
       });
     },
@@ -189,8 +191,7 @@ export default {
         product_id:item.product.id,
         qty:item.qty,
       };
-      this.$http.put(url,{data:cart}).then((res)=>{
-            console.log(res);
+      this.$http.put(url,{data:cart}).then(()=>{
             emitter.emit('update-cart');
             this.status.loadingItem = '';
          this.getCart();   
@@ -215,8 +216,7 @@ export default {
         if (!res.data.success) {
         alert(res.data.message || '優惠碼無效或已過期');
         return;
-      }
-         console.log(res)
+        }
          this.getCart();
       }).catch((error)=>{
      const errorMessage = error?.response?.data?.message || '優惠碼無效或已過期';
@@ -236,8 +236,39 @@ export default {
     },
   },
   created() {
+    Swal.fire({
+    icon: 'info',
+    title: '優惠提醒',
+    text: '請輸入優惠碼 GOATM，就可以享有 50% 折扣！',
+    confirmButtonText: '了解'
+    });
     this.getProducts();
     this.getCart();
   },
 };
 </script>
+<style>
+html {
+  scroll-behavior: smooth;
+  background-color: #FFFFE0;
+}
+
+body {
+  background-color: #FFFFE0;
+}
+.container {
+  padding-bottom: 100px; /* 或 footer 高度 + 一點空間 */
+}
+.container,
+.row,
+.col-md-5,
+.table {
+  background-color: transparent;
+}
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+}
+</style>

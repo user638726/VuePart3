@@ -1,26 +1,27 @@
 <template>
   <Loading :active="isLoading"></Loading>
-  <div class="my-5 row justify-content-center">
+  <div class="my-5 row justify-content-center" style="padding-top: 70px;">
     <form class="col-md-6" @submit.prevent="payOrder">
       <table class="table align-middle">
         <thead>
         <th>品名</th>
         <th>數量</th>
-        <th>單價</th>
+        <th class="text-end">單價</th>
         </thead>
         <tbody>
         <tr v-for="item in order.products" :key="item.id">
           <td>{{ item.product.title }}</td>
           <td>{{ item.qty }}/{{ item.product.unit }}</td>
-          <td class="text-end">{{ item.final_total }}</td>
+          <td class="text-end font-monospace">{{ formatCurrency(item.final_total) }}</td>
         </tr>
         </tbody>
         <tfoot>
-        <tr>
-          <td colspan="2" class="text-end">總計</td>
-          <td class="text-end">{{ order.total }}</td>
-        </tr>
+         <tr>
+            <td colspan="2" class="text-end fw-bold">總計</td>
+            <td class="text-end fw-bold">{{ formatCurrency(order.total) }}</td>
+         </tr>
         </tfoot>
+
       </table>
 
       <table class="table">
@@ -55,6 +56,9 @@
       </div>
     </form>
   </div>
+  <footer class="footer-fixed bg-dark text-white text-center py-3">
+  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
+</footer>
 </template>
 
 <script>
@@ -93,6 +97,10 @@ export default {
           }, 15000);
         });
     },
+    formatCurrency(value) {
+    if (typeof value !== 'number') return value;
+    return 'NT$' + value.toLocaleString('zh-TW');
+  },
   },
   created() {
     this.orderId = this.$route.params.orderId;
@@ -100,3 +108,11 @@ export default {
   },
 };
 </script>
+<style scoped>
+.footer-fixed {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 999;
+}
+</style>
