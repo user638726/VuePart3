@@ -76,7 +76,6 @@ export default {
         .then((res) => {
           if (res.data.success) {
             this.order = res.data.order;
-            console.log(this.order);
           }
         });
     },
@@ -85,20 +84,18 @@ export default {
 
       this.$http.post(url)
         .then((res) => {
-          console.log(res);
 
           if (res.data.success) {
             this.getOrder();
           }
           setTimeout(() => {
-            this.$router.push(`/`);
+            this.$router.push(`/frontproducts`);
           }, 15000);
         });
     },
   },
   created() {
     this.orderId = this.$route.params.orderId;
-    console.log(this.orderId);
     this.getOrder();
   },
 };

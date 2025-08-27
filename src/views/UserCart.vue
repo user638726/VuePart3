@@ -167,9 +167,8 @@ export default {
        product_id:id
       ,qty:1,};
       this.$http.post(url,{data:cart})
-      .then((res)=>{
+      .then(()=>{
          this.status.loadingItem='';
-         console.log(res)
          emitter.emit('update-cart');
          this.getCart();
       });
@@ -178,7 +177,6 @@ export default {
        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
        this.isLoading = true;
        this.$http.get(url).then((res)=>{
-        console.log(res);
         this.cart = res.data.data;
         this.isLoading = false;
        });
@@ -201,8 +199,7 @@ export default {
     removeCartItem(id) {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
       this.status.loadingItem = id;
-      this.$http.delete(url).then((res) => {
-       console.log('已刪除購物車商品:', res);
+      this.$http.delete(url).then(() => {
        this.status.loadingItem = '';
        emitter.emit('update-cart');
        this.getCart(); // 重新取得購物車資料
@@ -231,7 +228,6 @@ export default {
       const order = this.form;
       this.$http.post(url,{data:order})
       .then((res)=>{
-            console.log(res);
             emitter.emit('update-cart');
             const orderId = res.data.orderId; // 從 API 回傳中取得 orderId
             this.$router.push(`/user/checkout/${orderId}`);
