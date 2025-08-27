@@ -251,7 +251,7 @@ methods: {
 </footer>
 </template>
 
-<style>
+<style scoped>
 .footer-fixed {
   position: fixed;
   bottom: 0;

@@ -94,7 +94,7 @@ export default {
           }
           setTimeout(() => {
             this.$router.push(`/frontproducts`);
-          }, 15000);
+          }, 10000);
         });
     },
     formatCurrency(value) {

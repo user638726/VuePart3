@@ -57,7 +57,7 @@
         <del class="h6" v-if="product.price">原價 {{ formatCurrency(product.origin_price) }} 元</del>
         <div class="h5" v-if="product.price">現在只要 {{ formatCurrency(product.price) }} 元</div>
         <hr>
-        <button type="button" class="btn btn-outline-danger"
+        <button type="button" class="btn btn-dark"
                 @click="addToCart(product.id)">
           加到購物車
         </button>
