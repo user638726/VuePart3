@@ -1,5 +1,23 @@
 <template>
   <Loading :active="isLoading"></Loading>
+  <!-- Stepper -->
+<div class="stepper-container">
+  <div class="step" :class="{ active: currentStep >= 1 }">
+    <div class="circle">1</div>
+    <div class="label">購物車</div>
+  </div>
+  <div class="arrow" :class="{ active: currentStep >= 2 }"></div>
+  <div class="step" :class="{ active: currentStep >= 2 }">
+    <div class="circle">2</div>
+    <div class="label">填寫資料</div>
+  </div>
+  <div class="arrow" :class="{ active: currentStep >= 3 }"></div>
+  <div class="step" :class="{ active: currentStep >= 3 }">
+    <div class="circle">3</div>
+    <div class="label">完成訂單</div>
+  </div>
+</div>
+
   <div class="container" style="padding-top: 70px;">
    
     <div class="row mt-4">
@@ -13,7 +31,7 @@
                 <th></th>
                 <th>品名</th>
                 <th style="width: 110px">數量</th>
-                <th>單價</th>
+                <th class="text-end">單價</th>
               </tr>
             </thead>
             <tbody>
@@ -149,6 +167,7 @@ export default {
       },
       cart:{},
       coupon_code:'',
+      currentStep: 1,
     };
   },
   methods: {
@@ -182,6 +201,16 @@ export default {
        this.$http.get(url).then((res)=>{
         this.cart = res.data.data;
         this.isLoading = false;
+        if (!this.cart.carts || this.cart.carts.length === 0) {
+           Swal.fire({
+        icon: 'warning',
+        title: '購物車是空的',
+        text: '即將為您導回商品頁',
+        confirmButtonText: '確定'
+         }).then(() => {
+        this.$router.push('/frontproducts');
+        });
+       } 
        });
     },
     updateCart(item){
@@ -265,7 +294,8 @@ body {
   background-color: #FFFFE0;
 }
 .container {
-  padding-bottom: 100px; /* 或 footer 高度 + 一點空間 */
+  padding-bottom: 100px;
+  padding-top: 70px;/* 或 footer 高度 + 一點空間 */
 }
 .container,
 .row,
@@ -279,5 +309,85 @@ body {
   width: 100%;
   z-index: 999;
 }
+.stepper-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 80px; /* 頂部留空，避免被 fixed navbar 遮住 */
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #ccc;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step.active .circle {
+  background-color: #000;
+}
+
+.label {
+  margin-top: 5px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* 箭頭樣式 */
+.arrow {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 4px; /* 加粗線條 */
+  background-color: #ccc;
+}
+
+.arrow::after {
+  content: '';
+  position: absolute;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-top: 4px solid #ccc;
+  border-right: 4px solid #ccc;
+  transform: rotate(45deg);
+  background-color: transparent;
+}
+
+.arrow.active::before {
+  background-color: #000;
+}
+
+.arrow.active::after {
+  border-color: #000;
+}
+
+
 
 </style>
