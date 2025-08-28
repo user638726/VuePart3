@@ -59,6 +59,10 @@ const routes = [
       },
     ],
   },
+  { 
+    path: '*', 
+    redirect: '/' 
+  }
 ];
 
 const router = createRouter({

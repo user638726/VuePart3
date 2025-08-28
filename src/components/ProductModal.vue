@@ -1,5 +1,5 @@
 <template>
-<!-- 請同學自行新增 v-model -->
+  <!-- 請同學自行新增 v-model -->
   <!-- Modal -->
   <div
     class="modal fade"
@@ -51,7 +51,11 @@
               <img class="img-fluid" :src="tempProduct.imageUrl" alt="" />
               <!-- 延伸技巧，多圖 -->
               <div class="mt-5" v-if="tempProduct.images">
-                <div v-for="(image, key) in tempProduct.images" class="mb-3 input-group" :key="key">
+                <div
+                  v-for="(image, key) in tempProduct.images"
+                  class="mb-3 input-group"
+                  :key="key"
+                >
                   <input
                     type="url"
                     class="form-control form-control"
@@ -68,7 +72,8 @@
                 </div>
                 <div
                   v-if="
-                    tempProduct.images[tempProduct.images.length - 1] || !tempProduct.images.length
+                    tempProduct.images[tempProduct.images.length - 1] ||
+                    !tempProduct.images.length
                   "
                 >
                   <button
@@ -178,8 +183,11 @@
           </div>
         </div>
         <div class="modal-footer">
-          
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            data-bs-dismiss="modal"
+          >
             取消
           </button>
           <button
@@ -196,13 +204,15 @@
 </template>
 
 <script>
-import modalMixin from '@/mixins/modalMixin';
+import modalMixin from "@/mixins/modalMixin";
 
 export default {
   props: {
     product: {
       type: Object,
-      default() { return {}; },
+      default() {
+        return {};
+      },
     },
   },
   watch: {
@@ -217,19 +227,19 @@ export default {
     };
   },
   methods: {
-    uploadFile(){
-       const uploadFile = this.$refs.fileInput.files[0];
-       const formData = new FormData();
-       formData.append('file-to-upload',uploadFile);
-       const url=`${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`;
-       this.$http.post(url,formData).then((response)=>{
-          console.log(response.data);
-          if(response.data.success){
-            this.tempProduct.imageUrl = response.data.imageUrl;
-          }
-       });
+    uploadFile() {
+      const uploadFile = this.$refs.fileInput.files[0];
+      const formData = new FormData();
+      formData.append("file-to-upload", uploadFile);
+      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`;
+      this.$http.post(url, formData).then((response) => {
+        console.log(response.data);
+        if (response.data.success) {
+          this.tempProduct.imageUrl = response.data.imageUrl;
+        }
+      });
     },
   },
-  mixins:[modalMixin],
+  mixins: [modalMixin],
 };
 </script>

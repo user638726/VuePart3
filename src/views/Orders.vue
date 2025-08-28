@@ -2,19 +2,18 @@
   <Loading :active="isLoading"></Loading>
   <table class="table mt-4">
     <thead>
-    <tr>
-      <th>購買時間</th>
-      <th>Email</th>
-      <th>購買款項</th>
-      <th>應付金額</th>
-      <th>是否付款</th>
-      <th>編輯</th>
-    </tr>
+      <tr>
+        <th>購買時間</th>
+        <th>Email</th>
+        <th>購買款項</th>
+        <th>應付金額</th>
+        <th>是否付款</th>
+        <th>編輯</th>
+      </tr>
     </thead>
     <tbody>
       <template v-for="(item, key) in orders" :key="key">
-        <tr v-if="orders.length"
-            :class="{'text-secondary': !item.is_paid}">
+        <tr v-if="orders.length" :class="{ 'text-secondary': !item.is_paid }">
           <td>{{ $filters.date(item.create_at) }}</td>
           <td><span v-text="item.user.email" v-if="item.user"></span></td>
           <td>
@@ -28,9 +27,13 @@
           <td class="text-right">{{ item.total }}</td>
           <td>
             <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" :id="`paidSwitch${item.id}`"
-                     v-model="item.is_paid"
-                     @change="updatePaid(item)">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                :id="`paidSwitch${item.id}`"
+                v-model="item.is_paid"
+                @change="updatePaid(item)"
+              />
               <label class="form-check-label" :for="`paidSwitch${item.id}`">
                 <span v-if="item.is_paid">已付款</span>
                 <span v-else>未付款</span>
@@ -39,27 +42,38 @@
           </td>
           <td>
             <div class="btn-group">
-              <button class="btn btn-outline-primary btn-sm"
-                      @click="openModal(false, item)">檢視</button>
-              <button class="btn btn-outline-danger btn-sm"
-                      @click="openDelOrderModal(item)"
-              >刪除</button>
+              <button
+                class="btn btn-outline-primary btn-sm"
+                @click="openModal(false, item)"
+              >
+                檢視
+              </button>
+              <button
+                class="btn btn-outline-danger btn-sm"
+                @click="openDelOrderModal(item)"
+              >
+                刪除
+              </button>
             </div>
           </td>
         </tr>
       </template>
     </tbody>
   </table>
-  <OrderModal :order="tempOrder"
-              ref="orderModal"  @update-order="handleUpdateOrder" @update-paid="updatePaid"></OrderModal>
+  <OrderModal
+    :order="tempOrder"
+    ref="orderModal"
+    @update-order="handleUpdateOrder"
+    @update-paid="updatePaid"
+  ></OrderModal>
   <DelModal :item="tempOrder" ref="delModal" @del-item="delOrder"></DelModal>
   <Pagination :pages="pagination" @emit-pages="getOrders"></Pagination>
 </template>
 
 <script>
-import DelModal from '@/components/DelModal.vue';
-import OrderModal from '@/components/orderModal.vue';
-import Pagination from '@/components/Pagination.vue';
+import DelModal from "@/components/DelModal.vue";
+import OrderModal from "@/components/orderModal.vue";
+import Pagination from "@/components/Pagination.vue";
 
 export default {
   data() {
@@ -109,7 +123,7 @@ export default {
       this.$http.put(api, { data: paid }).then((response) => {
         this.isLoading = false;
         this.getOrders(this.currentPage);
-        this.$httpMessageState(response, '更新付款狀態');
+        this.$httpMessageState(response, "更新付款狀態");
       });
     },
     delOrder() {
@@ -123,10 +137,10 @@ export default {
       });
     },
     handleUpdateOrder(order) {
-     console.log('接收到更新的訂單：', order);
-     this.$refs.orderModal.hideModal();
-     this.getOrders(this.currentPage);
-   },
+      console.log("接收到更新的訂單：", order);
+      this.$refs.orderModal.hideModal();
+      this.getOrders(this.currentPage);
+    },
   },
   created() {
     this.getOrders();

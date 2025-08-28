@@ -1,71 +1,72 @@
 <template>
   <Loading :active="isLoading"></Loading>
   <div class="stepper-container">
-  <div class="step" :class="{ active: currentStep >= 1 }">
-    <div class="circle">1</div>
-    <div class="label">購物車</div>
+    <div class="step" :class="{ active: currentStep >= 1 }">
+      <div class="circle">1</div>
+      <div class="label">購物車</div>
+    </div>
+    <div class="arrow" :class="{ active: currentStep >= 2 }"></div>
+    <div class="step" :class="{ active: currentStep >= 2 }">
+      <div class="circle">2</div>
+      <div class="label">填寫資料</div>
+    </div>
+    <div class="arrow" :class="{ active: currentStep >= 3 }"></div>
+    <div class="step" :class="{ active: currentStep >= 3 }">
+      <div class="circle">3</div>
+      <div class="label">完成訂單</div>
+    </div>
   </div>
-  <div class="arrow" :class="{ active: currentStep >= 2 }"></div>
-  <div class="step" :class="{ active: currentStep >= 2 }">
-    <div class="circle">2</div>
-    <div class="label">填寫資料</div>
-  </div>
-  <div class="arrow" :class="{ active: currentStep >= 3 }"></div>
-  <div class="step" :class="{ active: currentStep >= 3 }">
-    <div class="circle">3</div>
-    <div class="label">完成訂單</div>
-  </div>
-</div>
-  
-  <div class="my-5 row justify-content-center" style="padding-top: 70px;">
+
+  <div class="my-5 row justify-content-center" style="padding-top: 70px">
     <form class="col-md-6" @submit.prevent="payOrder">
       <table class="table align-middle">
         <thead>
-        <th>品名</th>
-        <th>數量</th>
-        <th class="text-end">單價</th>
+          <th>品名</th>
+          <th>數量</th>
+          <th class="text-end">單價</th>
         </thead>
         <tbody>
-        <tr v-for="item in order.products" :key="item.id">
-          <td>{{ item.product.title }}</td>
-          <td>{{ item.qty }}/{{ item.product.unit }}</td>
-          <td class="text-end font-monospace">{{ formatCurrency(item.final_total) }}</td>
-        </tr>
+          <tr v-for="item in order.products" :key="item.id">
+            <td>{{ item.product.title }}</td>
+            <td>{{ item.qty }}/{{ item.product.unit }}</td>
+            <td class="text-end font-monospace">
+              {{ formatCurrency(item.final_total) }}
+            </td>
+          </tr>
         </tbody>
         <tfoot>
-         <tr>
+          <tr>
             <td colspan="2" class="text-end fw-bold">總計</td>
             <td class="text-end fw-bold">{{ formatCurrency(order.total) }}</td>
-         </tr>
+          </tr>
         </tfoot>
-
       </table>
 
       <table class="table">
         <tbody>
-        <tr>
-          <th width="100">Email</th>
-          <td>{{ order.user.email }}</td>
-        </tr>
-        <tr>
-          <th>姓名</th>
-          <td>{{ order.user.name }}</td>
-        </tr>
-        <tr>
-          <th>收件人電話</th>
-          <td>{{ order.user.tel }}</td>
-        </tr>
-        <tr>
-          <th>收件人地址</th>
-          <td>{{ order.user.address }}</td>
-        </tr>
-        <tr>
-          <th>付款狀態</th>
-          <td>
-            <span v-if="!order.is_paid">尚未付款</span>
-            <span v-else class="text-success">付款完成</span>
-          </td>
-        </tr>
+          <tr>
+            <th width="100">Email</th>
+            <td>{{ order.user.email }}</td>
+          </tr>
+          <tr>
+            <th>姓名</th>
+            <td>{{ order.user.name }}</td>
+          </tr>
+          <tr>
+            <th>收件人電話</th>
+            <td>{{ order.user.tel }}</td>
+          </tr>
+          <tr>
+            <th>收件人地址</th>
+            <td>{{ order.user.address }}</td>
+          </tr>
+          <tr>
+            <th>付款狀態</th>
+            <td>
+              <span v-if="!order.is_paid">尚未付款</span>
+              <span v-else class="text-success">付款完成</span>
+            </td>
+          </tr>
         </tbody>
       </table>
       <div class="text-end" v-if="order.is_paid === false">
@@ -74,8 +75,8 @@
     </form>
   </div>
   <footer class="footer-fixed bg-dark text-white text-center py-3">
-  <p>&copy; 2025 籃球瘋. All rights reserved.</p>
-</footer>
+    <p>&copy; 2025 籃球瘋. All rights reserved.</p>
+  </footer>
 </template>
 
 <script>
@@ -85,7 +86,7 @@ export default {
       order: {
         user: {},
       },
-      orderId: '',
+      orderId: "",
       isLoading: false,
       currentStep: 2,
     };
@@ -94,32 +95,29 @@ export default {
     getOrder() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderId}`;
 
-      this.$http.get(url)
-        .then((res) => {
-          if (res.data.success) {
-            this.order = res.data.order;
-          }
-        });
+      this.$http.get(url).then((res) => {
+        if (res.data.success) {
+          this.order = res.data.order;
+        }
+      });
     },
     payOrder() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`;
 
-      this.$http.post(url)
-        .then((res) => {
-
-          if (res.data.success) {
-            this.getOrder();
-          }
-          this.currentStep = 3;
-          setTimeout(() => {
-            this.$router.push(`/frontproducts`);
-          }, 10000);
-        });
+      this.$http.post(url).then((res) => {
+        if (res.data.success) {
+          this.getOrder();
+        }
+        this.currentStep = 3;
+        setTimeout(() => {
+          this.$router.push(`/frontproducts`);
+        }, 10000);
+      });
     },
     formatCurrency(value) {
-    if (typeof value !== 'number') return value;
-    return 'NT$' + value.toLocaleString('zh-TW');
-  },
+      if (typeof value !== "number") return value;
+      return "NT$" + value.toLocaleString("zh-TW");
+    },
   },
   created() {
     this.orderId = this.$route.params.orderId;
@@ -143,7 +141,6 @@ export default {
   margin-bottom: 30px;
   flex-wrap: wrap;
 }
-
 
 .step {
   display: flex;
@@ -186,7 +183,7 @@ export default {
 }
 
 .arrow::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 4px; /* 加粗線條 */
@@ -194,7 +191,7 @@ export default {
 }
 
 .arrow::after {
-  content: '';
+  content: "";
   position: absolute;
   right: -6px;
   width: 10px;
@@ -212,6 +209,4 @@ export default {
 .arrow.active::after {
   border-color: #000;
 }
-
-
 </style>
