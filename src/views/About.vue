@@ -330,13 +330,6 @@ body {
   background-color: #ffffe0;
 }
 
-#basketball1,
-#basketball2 {
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 1rem;
-}
-
 /* 🔁 手機 RWD 調整 */
 @media (max-width: 576px) {
   .card-img-overlay {
