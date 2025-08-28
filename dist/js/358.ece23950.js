@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunknewproject2"]=self["webpackChunknewproject2"]||[]).push([[358],{358:function(e,n,t){t.r(n),t.d(n,{default:function(){return l}});var u=t(641);function r(e,n){const t=(0,u.g2)("RouterLink");return(0,u.uX)(),(0,u.CE)("div",null,[n[1]||(n[1]=(0,u.Lk)("h1",null,"About page",-1)),(0,u.bF)(t,{to:"/"},{default:(0,u.k6)(()=>n[0]||(n[0]=[(0,u.eW)("go to home",-1)])),_:1,__:[0]})])}var o=t(262);const c={},a=(0,o.A)(c,[["render",r]]);var l=a}}]);
-//# sourceMappingURL=358.ece23950.js.map
