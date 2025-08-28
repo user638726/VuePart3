@@ -37,7 +37,6 @@ export default {
       const api = `${process.env.VUE_APP_API}logout`;
       this.$http.post(api, this.user).then((res) => {
         if (res.data.success) {
-          console.log(res);
           this.$router.push("/");
         }
       });
