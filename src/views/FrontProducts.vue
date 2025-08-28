@@ -112,7 +112,7 @@ export default {
         // 等待 3000ms 再跳轉頁面
         this.hoverTimeout = setTimeout(() => {
           this.getProduct(id);
-        }, 3000);
+        }, 1000);
       }
     },
     addCart(id, event) {
@@ -379,7 +379,7 @@ export default {
   </footer>
 </template>
 
-<style>
+<style scoped>
 .footer-fixed {
   position: fixed;
   bottom: 0;

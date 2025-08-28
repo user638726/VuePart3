@@ -67,7 +67,7 @@ export default {
       setTimeout(() => {
         this.$emit("card-click", id);
         this.activeCardId = null; // 清除 hover 樣式
-      }, 3000);
+      }, 1000);
     },
     formatCurrency(num) {
       const safeNum = Number(num) || 0;

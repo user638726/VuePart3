@@ -1,27 +1,69 @@
 <template>
   <Loading :active="isLoading"></Loading>
   <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-          <router-link to="/user/cart">購物車</router-link>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-          {{ product.title }}
-        </li>
-      </ol>
-    </nav>
-    <div class="row justify-content-center">
-      <article class="col-8">
-        <h2>{{ product.title }}</h2>
-        <div>{{ product.content }}</div>
-        <div>{{ product.description }}</div>
+    <div class="row justify-content-between align-items-start">
+      <!-- 左側：商品圖片 -->
+      <div class="col-md-6">
         <img
           :src="product.imageUrl"
           alt=""
           class="img-fluid mb-3"
           ref="productImage"
         />
+      </div>
+      <!-- 右側：breadcrumb + 商品文字 -->
+      <div class="col-md-6">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <router-link to="/">首頁</router-link>
+            </li>
+            <li class="breadcrumb-item">
+              <router-link to="/frontproducts">產品</router-link>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              {{ product.title }}
+            </li>
+          </ol>
+        </nav>
+        <h2>{{ product.title }}</h2>
+        <div>{{ product.content }}</div>
+        <div>{{ product.description }}</div>
+
+        <div class="h5" v-if="!product.price">
+          {{ formatCurrency(product.origin_price) }} 元
+        </div>
+        <del class="h6" v-if="product.price">
+          原價 {{ formatCurrency(product.origin_price) }} 元
+        </del>
+        <div class="h5" v-if="product.price">
+          現在只要 {{ formatCurrency(product.price) }} 元
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <!-- 數量輸入框 -->
+          <input
+            id="quantity"
+            type="number"
+            min="1"
+            step="1"
+            class="form-control w-auto px-2"
+            @blur="validateQty"
+            v-model.number="qty"
+          />
+
+          <!-- 加入購物車按鈕 -->
+          <button
+            type="button"
+            class="btn btn-dark"
+            @click="addToCart(product.id)"
+          >
+            加到購物車
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4">
+      <div class="col">
         <div class="accordion" id="accordionExample">
           <div class="accordion-item">
             <h2 class="accordion-header">
@@ -93,25 +135,6 @@
             </div>
           </div>
         </div>
-      </article>
-      <div class="col-4">
-        <div class="h5" v-if="!product.price">
-          {{ formatCurrency(product.origin_price) }} 元
-        </div>
-        <del class="h6" v-if="product.price"
-          >原價 {{ formatCurrency(product.origin_price) }} 元</del
-        >
-        <div class="h5" v-if="product.price">
-          現在只要 {{ formatCurrency(product.price) }} 元
-        </div>
-        <hr />
-        <button
-          type="button"
-          class="btn btn-dark"
-          @click="addToCart(product.id)"
-        >
-          加到購物車
-        </button>
       </div>
     </div>
   </div>
@@ -128,6 +151,7 @@ export default {
       product: {},
       id: "",
       isLoading: false,
+      qty: 1,
     };
   },
   methods: {
@@ -141,11 +165,17 @@ export default {
         }
       });
     },
-    addToCart(id, qty = 1) {
+    validateQty() {
+      if (!this.qty || this.qty < 1) {
+        this.qty = 1;
+      }
+    },
+    addToCart(id) {
+      this.validateQty();
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       const cart = {
         product_id: id,
-        qty,
+        qty: this.qty,
       };
       this.isLoading = true;
       this.$http.post(url, { data: cart }).then((res) => {
@@ -181,5 +211,20 @@ html {
 
 body {
   background-color: #ffffe0;
+}
+.container {
+  padding-top: 80px; /* 保持原本 navbar 高度的補償 */
+  padding-bottom: 100px; /* 新增：避免被固定 footer 遮住 */
+}
+.breadcrumb-item a {
+  color: black !important;
+  text-decoration: none; /* 可選：移除底線 */
+}
+
+.breadcrumb-item.active {
+  color: black;
+}
+.breadcrumb-item a:hover {
+  color: black !important;
 }
 </style>

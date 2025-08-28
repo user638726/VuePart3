@@ -312,7 +312,6 @@ export default {
 
 .card-text {
   font-size: clamp(1rem, 3vw, 2rem);
-  line-height: 1.5;
 }
 
 .card-img {
@@ -335,13 +334,15 @@ body {
   .card-img-overlay {
     position: relative;
     background-color: rgba(255, 255, 255, 0.9);
-    padding: 1em;
     height: auto;
   }
 
   .card-img {
     max-height: none;
     height: auto;
+  }
+  main {
+    padding-bottom: 120px; /* ⬅️ 增加底部空間以避免 footer 擋到內容 */
   }
 }
 </style>
