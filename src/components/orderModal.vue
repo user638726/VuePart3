@@ -124,7 +124,7 @@
 import modalMixin from "@/mixins/modalMixin";
 
 export default {
-  name: "orderModal",
+  name: "OrderModal",
   props: {
     order: {
       type: Object,
