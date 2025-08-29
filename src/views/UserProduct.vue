@@ -39,7 +39,7 @@
         <div class="h5" v-if="product.price">
           現在只要 {{ formatCurrency(product.price) }} 元
         </div>
-        <div class="d-flex align-items-center gap-2">
+        <div class="d-flex flex-column flex-sm-row align-items-stretch gap-2">
           <!-- 數量輸入框 -->
           <div class="input-group w-auto align-items-center">
             <button
