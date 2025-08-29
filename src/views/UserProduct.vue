@@ -41,15 +41,32 @@
         </div>
         <div class="d-flex align-items-center gap-2">
           <!-- 數量輸入框 -->
-          <input
-            id="quantity"
-            type="number"
-            min="1"
-            step="1"
-            class="form-control w-auto px-2"
-            @blur="validateQty"
-            v-model.number="qty"
-          />
+          <div class="input-group w-auto align-items-center">
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              @click="decreaseQty"
+            >
+              −
+            </button>
+            <input
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              class="form-control text-center"
+              style="max-width: 70px"
+              v-model.number="qty"
+              @blur="validateQty"
+              @keydown.prevent="blockNonNumber"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              @click="increaseQty"
+            >
+              ＋
+            </button>
+          </div>
 
           <!-- 加入購物車按鈕 -->
           <button
@@ -168,8 +185,32 @@ export default {
     validateQty() {
       if (!this.qty || this.qty < 1) {
         this.qty = 1;
+      } else {
+        this.qty = Math.floor(this.qty); // 去除小數
       }
     },
+    increaseQty() {
+      this.qty++;
+    },
+    decreaseQty() {
+      if (this.qty > 1) {
+        this.qty--;
+      }
+    },
+    blockNonNumber(e) {
+      // 允許：數字鍵、刪除鍵、Backspace、Tab、方向鍵
+      const allowedKeys = [
+        "Backspace",
+        "Delete",
+        "Tab",
+        "ArrowLeft",
+        "ArrowRight",
+      ];
+      if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) {
+        e.preventDefault();
+      }
+    },
+
     addToCart(id) {
       this.validateQty();
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
@@ -226,5 +267,11 @@ body {
 }
 .breadcrumb-item a:hover {
   color: black !important;
+}
+@media (max-width: 576px) {
+  .input-group > .btn {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
 }
 </style>
