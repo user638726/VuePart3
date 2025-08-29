@@ -19,6 +19,10 @@
   </div>
 
   <div class="container" style="padding-top: 70px">
+    <div class="text-center">
+      <h2>購物車</h2>
+      <hr />
+    </div>
     <div v-if="cart.carts && cart.carts.length === 0" class="text-center my-5">
       <h4 class="text-muted mb-3">您的購物車是空的</h4>
       <router-link to="/frontproducts" class="btn btn-dark">
