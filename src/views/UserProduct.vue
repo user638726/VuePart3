@@ -28,7 +28,7 @@
         </nav>
         <h2>{{ product.title }}</h2>
         <div>{{ product.content }}</div>
-        <div>{{ product.description }}</div>
+        <div class="mb-4">{{ product.description }}</div>
 
         <div class="h5" v-if="!product.price">
           {{ formatCurrency(product.origin_price) }} 元
