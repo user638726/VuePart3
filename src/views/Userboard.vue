@@ -82,7 +82,7 @@
     </div>
   </nav>
   <div class="container-fluid mt-3 position-relative">
-    <ToastMessages></ToastMessages>
+    <ToastMessages/>
     <RouterView />
   </div>
 </template>
