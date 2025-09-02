@@ -48,7 +48,7 @@
                   @change="uploadFile"
                 />
               </div>
-              <img class="img-fluid" :src="tempProduct.imageUrl" alt="" />
+              <img class="img-fluid" :src="tempProduct.imageUrl" alt="商品圖片" />
               <!-- 延伸技巧，多圖 -->
               <div class="mt-5" v-if="tempProduct.images">
                 <div

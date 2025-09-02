@@ -6,7 +6,7 @@
       <div class="col-md-6">
         <img
           :src="product.imageUrl"
-          alt=""
+          alt="商品圖片"
           class="img-fluid mb-3"
           ref="productImage"
         />
