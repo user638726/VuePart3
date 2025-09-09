@@ -22,6 +22,11 @@ const routes = [
     component: () => import("../views/FrontProducts.vue"),
   },
   {
+    path: "/news",
+    name: "News",
+    component: () => import("../views/News.vue"),
+  },
+  {
     path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
@@ -68,6 +73,7 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   linkActiveClass: "active",
+  linkExactActiveClass: "active", 
   routes,
 });
 
