@@ -10,7 +10,6 @@ export default {
         loadingItem: "",
       },
       showCartPreview: false,
-      isMobile: false,
     };
   },
   computed: {
@@ -21,20 +20,14 @@ export default {
       return this.cart; // 或進一步處理顯示格式
     },
     cartIconEvents() {
-      if (this.isMobile) {
-        return {
-          click: this.toggleCartPreview,
-        };
-      } else {
-        return {
-          mouseenter: () => {
-            this.showCartPreview = true;
-          },
-          mouseleave: () => {
-            this.showCartPreview = false;
-          },
-        };
-      }
+      return {
+        mouseenter: () => {
+          this.showCartPreview = true;
+        },
+        mouseleave: () => {
+          this.showCartPreview = false;
+        },
+      };
     },
   },
   methods: {
@@ -137,9 +130,6 @@ export default {
           alert("刪除商品失敗，請稍後再試");
         });
     },
-    toggleCartPreview() {
-      this.showCartPreview = !this.showCartPreview;
-    },
     handleOutsideClick(event) {
       const cartIcon = this.$refs.cartIcon;
       if (cartIcon && !cartIcon.contains(event.target)) {
@@ -148,7 +138,6 @@ export default {
     },
   },
   mounted() {
-    this.isMobile = window.innerWidth <= 768; // ✅ 手機裝置判斷
     document.addEventListener("click", this.handleOutsideClick);
     emitter.on("update-cart", this.getCart);
     this.getProducts();
@@ -250,70 +239,105 @@ export default {
     </div>
   </nav>
   <main class="flex-grow-1 mt-5 pb-5">
-    <div class="card bg-dark text-black" id="basketball1">
-      <img
-        :src="
-          require('@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg')
-        "
-        class="card-img"
-        alt="籃球圖片"
-      />
-      <div class="card-img-overlay">
-        <h5 class="card-title">關於籃球瘋</h5>
-        <p class="card-text">「籃球瘋」不只是名詞，是一種生活態度。</p>
-        <p class="card-text">我們相信籃球能連結人與人、城市與夢想。</p>
-        <p class="card-text">從街頭到球場，從素人到職業，</p>
-        <p class="card-text">我們支持每一位為夢想努力的球員。</p>
-        <p class="card-text">歡迎加入我們，一起為籃球而瘋</p>
-      </div>
-    </div>
-    <div class="card bg-dark text-black" id="basketball2">
-      <img
-        :src="require('@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg')"
-        class="card-img"
-        alt="籃球理念圖"
-      />
-      <div class="card-img-overlay">
-        <h5 class="card-title">籃球瘋介紹</h5>
-        <p class="card-text">
-          我們相信籃球是一種語言，無需翻譯，卻能跨越文化與年齡。
-        </p>
-        <p class="card-text">
-          無論你是初學者還是老手，在這裡都能找到屬於自己的位置。
-        </p>
-        <p class="card-text">
-          我們致力於打造一個熱血、自由、且共融的籃球文化圈。
-        </p>
+    <div class="about-page">
+      <!-- Hero -->
+      <section
+        class="hero-section text-center d-flex align-items-center justify-content-center"
+      >
+        <div class="overlay"></div>
+        <div class="content">
+          <h2 class="fw-bold mb-2 text-white">關於我們</h2>
+          <p class="text-light">About Us</p>
+        </div>
+      </section>
+
+      <!-- 內容區塊 -->
+      <div class="container py-5">
+        <!-- 品牌介紹 -->
+        <section class="mb-5">
+          <h3 class="fw-bold mb-3 text-start">品牌介紹</h3>
+          <div class="card shadow-sm border-0">
+            <img
+              src="@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg"
+              alt="品牌介紹圖片"
+              class="card-img-top"
+              style="height: 400px; object-fit: cover"
+            />
+            <div class="card-body">
+              <p class="text-muted">
+                URBNSTEP
+                是一個結合設計與籃球熱愛的品牌，致力打造「場內與場外都能穿」的運動服飾…
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 品牌理念 -->
+        <section class="mb-5">
+          <h3 class="fw-bold mb-3 text-start">品牌理念</h3>
+          <div class="card shadow-sm border-0">
+            <img
+              src="@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg"
+              alt="品牌理念圖片"
+              class="card-img-top"
+              style="height: 400px; object-fit: cover"
+            />
+            <div class="card-body">
+              <p class="text-muted">
+                我們相信籃球不只是運動，更是一種生活態度。每一件商品都融入舒適與街頭風格，讓熱愛籃球的人能自在展現自己…
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 品牌故事 -->
+        <section class="mb-5">
+          <h3 class="fw-bold mb-3 text-start">品牌故事</h3>
+          <div class="card shadow-sm border-0">
+            <img
+              src="@/assets/picture/tj-dragotta-mu7amBMAT3E-unsplash.jpg"
+              alt="品牌故事圖片"
+              class="card-img-top"
+              style="height: 400px; object-fit: cover"
+            />
+            <div class="card-body">
+              <p class="text-muted">
+                URBNSTEP 的誕生來自於 Urban +
+                Step，代表城市中每個熱愛籃球的人都能勇敢踏出一步…
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   </main>
 </template>
 
 <style>
-
-.card-img-overlay {
-  background-color: rgba(255, 255, 255, 0.75);
-  padding: 1em 2em 1.5em 2em; /* 上右下左 */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  height: 100%;
-  word-break: break-word;
+.hero-section {
+  position: relative;
+  height: 300px;
+  background-image: url("@/assets/picture/tj-dragotta-Gl0jBJJTDWs-unsplash.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
-.card-title {
-  font-size: clamp(1.5rem, 5vw, 3rem);
-  margin-top: 0; /* 移除預設間距 */
+.hero-section .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4); /* 半透明黑色遮罩 */
 }
 
-.card-text {
-  font-size: clamp(1rem, 3vw, 2rem);
+.hero-section .content {
+  position: relative;
+  z-index: 1; /* 確保文字在遮罩上面 */
 }
 
-.card-img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+.about-block h3 {
+  font-size: 1.5rem;
 }
 
 html {
@@ -326,21 +350,19 @@ body {
 }
 
 /* 🔁 手機 RWD 調整 */
-@media (max-width: 576px) {
-  .card-img-overlay {
-    position: relative;
-    background-color: rgba(255, 255, 255, 0.9);
-    height: auto;
-  }
+img {
+  width: 1000px;
+  height: 800px;
+  object-fit: cover;
+}
 
-  .card-img {
-    max-height: none;
-    height: auto;
-  }
-  main {
-    padding-bottom: 120px; /* ⬅️ 增加底部空間以避免 footer 擋到內容 */
+@media (max-width: 576px) {
+  img {
+    width: 100%; /* 手機寬度滿版 */
+    height: auto; /* 高度自動 */
   }
 }
+
 .navbar.bg-dark,
 .navbar[data-bs-theme="dark"] {
   /* nothing here, 用來增加選擇器命中率 */
