@@ -1,6 +1,7 @@
 <template>
   <Loading :active="isLoading"></Loading>
   <!-- Stepper -->
+  <div class="stepper-wrapper text-center">
   <div class="stepper-container">
     <div class="step" :class="{ active: currentStep >= 1 }">
       <div class="circle">1</div>
@@ -18,11 +19,10 @@
     </div>
   </div>
 
-  <div class="container" style="padding-top: 70px">
-    <div class="text-center">
-      <h2>購物車</h2>
-      <hr />
-    </div>
+  <h2 class="cart-title">購物車</h2>
+  <hr />
+</div>
+    
     <div v-if="cart.carts && cart.carts.length === 0" class="text-center my-5">
       <h4 class="text-muted mb-3">您的購物車是空的</h4>
       <router-link to="/frontproducts" class="btn btn-dark">
@@ -165,7 +165,7 @@
               class="form-control"
               :class="{ 'is-invalid': errors['tel'] }"
               placeholder="請輸入電話"
-              rules="required"
+              rules="required|regex:^09[0-9]{8}$"
               v-model="form.user.tel"
             ></Field>
             <ErrorMessage name="tel" class="invalid-feedback"></ErrorMessage>
@@ -206,7 +206,6 @@
         </Form>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -349,10 +348,26 @@ html {
 body {
   background-color: #ffffe0;
 }
-.container {
-  padding-bottom: 100px;
-  padding-top: 70px; /* 或 footer 高度 + 一點空間 */
+.stepper-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 置中 */
+  margin-top: 80px; /* 避免被 navbar 蓋住 */
+  margin-bottom: 48px; /* Stepper 與標題間距 */
 }
+.stepper-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px; /* Stepper 與標題的間距 */
+}
+.cart-title {
+  margin: 0;
+  font-weight: bold;
+}
+
 .container,
 .row,
 .col-md-5,
@@ -365,7 +380,7 @@ body {
   align-items: center;
   gap: 10px;
   margin-top: 80px; /* 頂部留空，避免被 fixed navbar 遮住 */
-  margin-bottom: 30px;
+  margin-bottom: 48px; /* 建議改成 48px~56px */
   flex-wrap: wrap;
 }
 

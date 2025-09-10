@@ -12,10 +12,10 @@ export default {
       categories: [
         {
           name: "籃球",
-          subcategories: ["攻擊", "防守"],
+          subcategories: ["攻擊", "防守", "全部"],
         },
       ], // <-- 可改成你的實際分類
-      selectedCategory: "",
+      selectedCategory: "全部",
       activeCardId: null,
       hoverTimeout: null,
       showCartPreview: false,
@@ -26,8 +26,9 @@ export default {
       return this.cart.reduce((total, item) => total + item.qty, 0);
     },
     filteredProducts() {
-      if (!this.selectedCategory) return this.products;
-      // 根據商品標題是否包含分類關鍵字進行篩選（不區分大小寫）
+      if (!this.selectedCategory || this.selectedCategory === "全部") {
+        return this.products; // ✅ 全部商品
+      }
       return this.products.filter((product) =>
         product.title
           .toLowerCase()
@@ -274,12 +275,17 @@ export default {
     </div>
   </nav>
   <div class="container" style="padding-top: 80px">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="page-title">全部商品</h2>
+      </div>
+    </div>
+
     <div class="row">
-      <!-- 左側：商品分類 -->
+      <!-- 左側：分類選單 -->
       <div class="col-md-3 mb-4">
         <div class="p-3 bg-white shadow-sm rounded">
           <h5 class="mb-3">商品分類</h5>
-
           <div v-for="mainCategory in categories" :key="mainCategory.name">
             <strong>{{ mainCategory.name }}</strong>
             <div class="d-flex flex-wrap mt-2">
@@ -294,19 +300,11 @@ export default {
               </button>
             </div>
           </div>
-
-          <button
-            class="btn btn-outline-secondary btn-sm mt-4 w-100"
-            @click="selectedCategory = ''"
-          >
-            清除篩選
-          </button>
         </div>
       </div>
       <div class="col-md-9">
         <main style="padding-bottom: 100px">
           <section id="products">
-            <h2 class="text-center mb-4">全部商品</h2>
             <div class="row">
               <div
                 class="col-md-4 mb-4"
@@ -371,7 +369,6 @@ export default {
 </template>
 
 <style scoped>
-
 .card-title {
   font-size: 24px;
 }

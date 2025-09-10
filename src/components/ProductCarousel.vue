@@ -248,6 +248,15 @@ export default {
   position: relative;
   overflow: visible; /* 確保箭頭不會被裁切 */
 }
+.carousel-wrapper:last-of-type {
+  margin-bottom: 48px; /* 手機 */
+}
+
+@media (min-width: 768px) {
+  .carousel-wrapper:last-of-type {
+    margin-bottom: 64px; /* 平板 & 桌機 */
+  }
+}
 
 .card {
   cursor: pointer;

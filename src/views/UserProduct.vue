@@ -43,7 +43,7 @@
           <!-- 數量輸入框 -->
           <div class="input-group w-auto align-items-center">
             <button
-              class="btn btn-outline-secondary"
+              class="btn btn-dark"
               type="button"
               @click="decreaseQty"
             >
@@ -60,7 +60,7 @@
               @keydown.prevent="blockNonNumber"
             />
             <button
-              class="btn btn-outline-secondary"
+              class="btn btn-dark"
               type="button"
               @click="increaseQty"
             >
@@ -264,5 +264,28 @@ body {
     padding: 0.375rem 0.5rem;
     font-size: 0.875rem;
   }
+}
+.accordion-item {
+  border: 1px solid #333;
+}
+
+.accordion-button {
+  background-color: #333;
+  color: #fff;
+  font-weight: 500;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: #444; /* 展開時稍微淺一點 */
+  color: #fff;
+}
+
+.accordion-button:focus {
+  box-shadow: none; /* 移除藍色外框 */
+}
+
+.accordion-body {
+  background-color: #555; /* 內文深灰底 */
+  color: #f1f1f1; /* 文字變淺灰或白 */
 }
 </style>
