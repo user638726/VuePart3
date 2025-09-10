@@ -112,7 +112,7 @@
               />
               <div class="input-group-append">
                 <button
-                  class="btn btn-outline-secondary"
+                  class="btn btn-dark"
                   type="button"
                   @click="addCouponCode"
                 >
