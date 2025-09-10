@@ -242,7 +242,7 @@ export default {
     <div class="about-page">
       <!-- Hero -->
       <section
-        class="hero-section text-center d-flex align-items-center justify-content-center"
+        class="about-hero-section text-center d-flex align-items-center justify-content-center"
       >
         <div class="overlay"></div>
         <div class="content">
@@ -328,8 +328,8 @@ export default {
   </main>
 </template>
 
-<style>
-.hero-section {
+<style scoped>
+.about-hero-section {
   position: relative;
   height: 300px;
   background-image: url("@/assets/picture/tj-dragotta-Gl0jBJJTDWs-unsplash.jpg");
@@ -337,18 +337,15 @@ export default {
   background-position: center;
 }
 
-.hero-section .overlay {
+.about-hero-section .overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4); /* 半透明黑色遮罩 */
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
 }
 
-.hero-section .content {
+.about-hero-section .content {
   position: relative;
-  z-index: 1; /* 確保文字在遮罩上面 */
+  z-index: 1;
 }
 
 .about-block h3 {
