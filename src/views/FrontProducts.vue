@@ -368,18 +368,10 @@ export default {
       </div>
     </div>
   </div>
-  <footer class="footer-fixed bg-dark text-white text-center py-3">
-    <p>&copy; 2025 籃球瘋. All rights reserved.</p>
-  </footer>
 </template>
 
 <style scoped>
-.footer-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 999;
-}
+
 .card-title {
   font-size: 24px;
 }

@@ -283,10 +283,6 @@ export default {
       </div>
     </div>
   </main>
-
-  <footer class="footer-fixed bg-dark text-white text-center py-3">
-    <p>&copy; 2025 籃球瘋. All rights reserved.</p>
-  </footer>
 </template>
 
 <style>
@@ -301,12 +297,6 @@ html {
 
 body {
   background-color: #ffffe0;
-}
-.footer-fixed {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 999;
 }
 /* 滑鼠 hover / 手機點擊選單項目時變色 */
 /* ============================
@@ -420,9 +410,11 @@ body {
 }
 .hero-section {
   position: relative;
-  height: 70vh; /* 全螢幕高度，你可以改成 500px */
-  background: url("@/assets/picture/basketballpart1.png") center center/cover
-    no-repeat;
+  height: 70vh; /* 高度可自行調 */
+  background: url("@/assets/picture/basketballpart1.png") center center/cover no-repeat;
+
+  margin-top: -56px; /* 把 navbar 高度抵消 */
+  padding-top: 56px; /* 文字下移，避免被 navbar 蓋掉 */
 }
 
 .hero-overlay {
