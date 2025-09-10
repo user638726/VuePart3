@@ -277,6 +277,8 @@ export default {
         <ProductCarousel
           v-if="products.length"
           :products="products"
+          :cart-icon-ref="$refs.cartIcon"
+          :cart-qty="cartQty"
           @add-to-cart="(id, $event) => addCart(id, $event)"
           @card-click="getProduct"
         />
