@@ -108,7 +108,7 @@ export default {
         this.currentStep = 3;
         setTimeout(() => {
           this.$router.push(`/frontproducts`);
-        }, 10000);
+        }, 3000);
       });
     },
     formatCurrency(value) {
