@@ -361,17 +361,20 @@ body {
   background-color: #ffffe0;
 }
 .text-muted {
-  font-size: 30px;
+  font-size: clamp(16px, 2.5vw, 20px);
+  line-height: 1.8;
 }
 /* 🔁 手機 RWD 調整 */
-img {
-  width: 1000px;
-  height: 800px;
-  object-fit: cover;
+.about-img {
+  width: 100%;
+  max-width: 600px;
+  display: block;
+  margin: 0 auto;
+  border-radius: 12px;
 }
 
 @media (max-width: 576px) {
-  img {
+  .about-img {
     width: 100%; /* 手機寬度滿版 */
     height: auto; /* 高度自動 */
   }
