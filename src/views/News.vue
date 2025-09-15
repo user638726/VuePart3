@@ -122,7 +122,7 @@ export default {
         loadingItem: "",
       },
       showCartPreview: false,
-      files: ["nba_6504.json", "nba_6505.json"],
+      files: ["nba_6499.json", "nba_6500.json"],
       posts: [],
       error: null,
     };
@@ -307,7 +307,7 @@ export default {
 
 /* 灰色外框 */
 .news-box {
-  background: #f8f9fa;
+  background: #F0F0F0;
   border-radius: 6px;
   padding: 20px;
 }
