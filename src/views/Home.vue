@@ -308,10 +308,7 @@ body {
    ============================ */
 
 /* 通用目標：支援 .bg-dark 或 data-bs-theme="dark" 的 navbar */
-.navbar.bg-dark,
-.navbar[data-bs-theme="dark"] {
-  /* nothing here, 用來增加選擇器命中率 */
-}
+
 
 /* 預設（白色）*/
 .navbar.bg-dark .navbar-brand,
