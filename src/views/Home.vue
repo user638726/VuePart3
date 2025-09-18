@@ -265,7 +265,7 @@ export default {
     </section>
 
     <!-- 最新消息 -->
-    <div class="row mb-5">
+    <div class="row mb-4">
       <div class="col-12 d-flex justify-content-center">
         <div class="content-wrapper">
           <TitleList />
@@ -274,7 +274,7 @@ export default {
     </div>
 
     <!-- 熱賣產品 -->
-    <div class="row mb-5">
+    <div class="row mb-4">
       <div class="col-12 d-flex justify-content-center">
         <div class="content-wrapper">
           <h2 class="text-center fw-bold mb-4">熱賣產品</h2>
@@ -296,7 +296,6 @@ export default {
 a {
   text-decoration: none;
 }
-
 html {
   scroll-behavior: smooth;
   background-color: #ffffe0;
