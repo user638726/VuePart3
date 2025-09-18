@@ -12,7 +12,7 @@ export default {
       categories: [
         {
           name: "籃球",
-          subcategories: ["攻擊", "防守", "全部"],
+          subcategories: ["全部", "攻擊", "防守"],
         },
       ], // <-- 可改成你的實際分類
       selectedCategory: "全部",
@@ -303,7 +303,7 @@ export default {
         </div>
       </div>
       <div class="col-md-9">
-        <main style="padding-bottom: 100px">
+        <main class="products-main">
           <section id="products">
             <div class="row">
               <div
@@ -415,10 +415,6 @@ body {
   color: #fff;
   border-color: #343a40;
 }
-.navbar.bg-dark,
-.navbar[data-bs-theme="dark"] {
-  /* nothing here, 用來增加選擇器命中率 */
-}
 
 /* 預設（白色）*/
 .navbar.bg-dark .navbar-brand,
@@ -517,4 +513,14 @@ body {
     transform: translateY(0);
   }
 }
+.products-main {
+  padding-bottom: 64px;
+}
+
+@media (max-width: 768px) {
+  .products-main {
+    padding-bottom: 48px;
+  }
+}
+
 </style>

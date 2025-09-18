@@ -1,5 +1,6 @@
 <script>
 import emitter from "@/methods/emitter";
+
 export default {
   data() {
     return {
@@ -17,7 +18,7 @@ export default {
       return this.cart.reduce((total, item) => total + item.qty, 0);
     },
     cartItems() {
-      return this.cart; // 或進一步處理顯示格式
+      return this.cart;
     },
     cartIconEvents() {
       return {
@@ -106,7 +107,6 @@ export default {
       this.$http
         .get(url)
         .then((res) => {
-          // 假設購物車清單在 res.data.data.carts 中
           if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
             this.cart = res.data.data.carts;
           } else {
@@ -124,7 +124,7 @@ export default {
       this.$http
         .delete(url)
         .then(() => {
-          this.cart = this.cart.filter((item) => item.id !== id); // 刪除後重新取得購物車
+          this.cart = this.cart.filter((item) => item.id !== id);
         })
         .catch(() => {
           alert("刪除商品失敗，請稍後再試");
@@ -154,8 +154,7 @@ export default {
   <Loading :active="isLoading"></Loading>
   <nav class="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
     <div class="container-fluid">
-      <!-- 籃球瘋 -->
-      <router-link class="navbar-brand" to="/"> 籃球瘋 </router-link>
+      <router-link class="navbar-brand" to="/">籃球瘋</router-link>
 
       <button
         class="navbar-toggler"
@@ -182,7 +181,6 @@ export default {
           </li>
         </ul>
 
-        <!-- 右邊購物車 -->
         <ul class="navbar-nav ms-auto">
           <span ref="cartIcon" class="cart-wrapper" v-on="cartIconEvents">
             <div class="cart-anchor">
@@ -200,7 +198,6 @@ export default {
                 </span>
               </router-link>
             </div>
-            <!-- 購物車預覽清單 -->
             <div
               v-if="showCartPreview && cartQty > 0"
               class="cart-preview position-absolute bg-white text-dark border rounded shadow"
@@ -238,9 +235,9 @@ export default {
       </div>
     </div>
   </nav>
+
   <main class="flex-grow-1 mt-5 pb-5">
     <div class="about-page">
-      <!-- Hero -->
       <section
         class="about-hero-section text-center d-flex align-items-center justify-content-center"
       >
@@ -251,84 +248,97 @@ export default {
         </div>
       </section>
 
-      <!-- 內容區塊 -->
+      <!-- 內容區塊置中且寬度限制在 10 欄 -->
       <div class="container py-5">
-        <!-- 品牌介紹 -->
-        <section class="mb-5">
-          <h3 class="fw-bold mb-3 text-start">品牌介紹</h3>
-          <div class="card shadow-sm border-0">
-            <img
-              src="@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg"
-              alt="品牌介紹圖片"
-              class="card-img-top"
-              style="height: 400px; object-fit: cover"
-            />
-            <div class="card-body">
-              <p class="text-muted">
-                籃球瘋是一個專注於 籃球技術訓練
-                的平台，致力於幫助每一位球員在基礎動作、比賽應用與籃球思維上全面提升。
-                我們深信：籃球不只是天賦，更是一門可以系統化學習的技術。
-                在這裡，你能找到： 專業教練設計的訓練課程
-                從基礎到進階的動作分解教學 線上資源與數據分析，讓學習更有效率
-                我們的目標是打造一個
-                陪伴球員成長的訓練環境，不論你是剛接觸籃球的新手，還是追求突破的進階球員，都能在籃球瘋找到適合自己的訓練方式。
-                籃球瘋，讓熱愛籃球的你，透過科學化訓練，踏出更穩健的一步。
-              </p>
-            </div>
-          </div>
-        </section>
+        <div class="row justify-content-center">
+          <div class="col-12 col-lg-10">
+            <!-- 品牌介紹 -->
+            <section class="mb-5">
+              <h3 class="fw-bold mb-3 text-start">品牌介紹</h3>
+              <div class="card shadow-sm border-0">
+                <img
+                  src="@/assets/picture/ben-hershey-5nk3wSFUWZc-unsplash.jpg"
+                  alt="品牌介紹圖片"
+                  class="card-img-top"
+                  style="height: 400px; object-fit: cover"
+                />
+                <div class="card-body">
+                  <p class="text-muted">
+                    籃球瘋是一個專注於 籃球技術訓練
+                    的平台，致力於幫助每一位球員在基礎動作、比賽應用與籃球思維上全面提升。
+                    我們深信：籃球不只是天賦，更是一門可以系統化學習的技術。
+                    在這裡，你能找到： 專業教練設計的訓練課程
+                    從基礎到進階的動作分解教學
+                    線上資源與數據分析，讓學習更有效率 我們的目標是打造一個
+                    陪伴球員成長的訓練環境，不論你是剛接觸籃球的新手，還是追求突破的進階球員，都能在籃球瘋找到適合自己的訓練方式。
+                    籃球瘋，讓熱愛籃球的你，透過科學化訓練，踏出更穩健的一步。
+                  </p>
+                </div>
+              </div>
+            </section>
 
-        <!-- 品牌理念 -->
-        <section class="mb-5">
-          <h3 class="fw-bold mb-3 text-start">品牌理念</h3>
-          <div class="card shadow-sm border-0">
-            <img
-              src="@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg"
-              alt="品牌理念圖片"
-              class="card-img-top"
-              style="height: 400px; object-fit: cover"
-            />
-            <div class="card-body">
-              <p class="text-muted">
-                我們秉持「專業、實用、持續成長」的核心理念：
-                專業：結合教練經驗與科學數據，提供正確高效的訓練。
-                實用：訓練內容強調動作應用，幫助球員能在比賽中真正發揮。
-                持續成長：無論你的起點在哪裡，籃球瘋都希望成為你一路向上的最佳夥伴。
-                我們深信，每一位球員都有潛力，只需要正確的學習方式與堅持，就能不斷進步。
-              </p>
-            </div>
-          </div>
-        </section>
+            <!-- 品牌理念 -->
+            <section class="mb-5">
+              <h3 class="fw-bold mb-3 text-start">品牌理念</h3>
+              <div class="card shadow-sm border-0">
+                <img
+                  src="@/assets/picture/richard-bagan-SmQ2Cku3alc-unsplash.jpg"
+                  alt="品牌理念圖片"
+                  class="card-img-top"
+                  style="height: 400px; object-fit: cover"
+                />
+                <div class="card-body">
+                  <p class="text-muted">
+                    我們秉持「專業、實用、持續成長」的核心理念：
+                    專業：結合教練經驗與科學數據，提供正確高效的訓練。
+                    實用：訓練內容強調動作應用，幫助球員能在比賽中真正發揮。
+                    持續成長：無論你的起點在哪裡，籃球瘋都希望成為你一路向上的最佳夥伴。
+                    我們深信，每一位球員都有潛力，只需要正確的學習方式與堅持，就能不斷進步。
+                  </p>
+                </div>
+              </div>
+            </section>
 
-        <!-- 品牌故事 -->
-        <section class="mb-5">
-          <h3 class="fw-bold mb-3 text-start">品牌故事</h3>
-          <div class="card shadow-sm border-0">
-            <img
-              src="@/assets/picture/tj-dragotta-mu7amBMAT3E-unsplash.jpg"
-              alt="品牌故事圖片"
-              class="card-img-top"
-              style="height: 400px; object-fit: cover"
-            />
-            <div class="card-body">
-              <p class="text-muted">
-                籃球瘋的誕生，來自於一群對籃球充滿熱情的教練與球員。
-                我們看見許多球員在訓練過程中遇到瓶頸：
-                有些人缺乏系統化的練習方向，有些人不知道如何把動作轉化為比賽中的能力。
-                因此，我們決定打造一個
-                人人都能接觸到的訓練平台，讓更多人能透過正確的方法提升自己。
-                籃球瘋不只是訓練工具，而是一個 陪伴球員成長、交流與突破的社群。
-                在這裡，我們一起努力，一起變強，一起享受籃球帶來的熱血與快樂。
-              </p>
-            </div>
+            <!-- 品牌故事 -->
+            <section class="mb-5">
+              <h3 class="fw-bold mb-3 text-start">品牌故事</h3>
+              <div class="card shadow-sm border-0">
+                <img
+                  src="@/assets/picture/tj-dragotta-mu7amBMAT3E-unsplash.jpg"
+                  alt="品牌故事圖片"
+                  class="card-img-top"
+                  style="height: 400px; object-fit: cover"
+                />
+                <div class="card-body">
+                  <p class="text-muted">
+                    籃球瘋的誕生，來自於一群對籃球充滿熱情的教練與球員。
+                    我們看見許多球員在訓練過程中遇到瓶頸：
+                    有些人缺乏系統化的練習方向，有些人不知道如何把動作轉化為比賽中的能力。
+                    因此，我們決定打造一個
+                    人人都能接觸到的訓練平台，讓更多人能透過正確的方法提升自己。
+                    籃球瘋不只是訓練工具，而是一個
+                    陪伴球員成長、交流與突破的社群。
+                    在這裡，我們一起努力，一起變強，一起享受籃球帶來的熱血與快樂。
+                  </p>
+                </div>
+              </div>
+            </section>
           </div>
-        </section>
+        </div>
       </div>
     </div>
   </main>
 </template>
 
 <style scoped>
+html {
+  scroll-behavior: smooth;
+  background-color: #ffffe0;
+}
+
+body {
+  background-color: #ffffe0;
+}
 .about-hero-section {
   position: relative;
   height: 300px;
@@ -348,23 +358,12 @@ export default {
   z-index: 1;
 }
 
-.about-block h3 {
-  font-size: 1.5rem;
-}
-
-html {
-  scroll-behavior: smooth;
-  background-color: #ffffe0;
-}
-
-body {
-  background-color: #ffffe0;
-}
 .text-muted {
   font-size: clamp(16px, 2.5vw, 20px);
   line-height: 1.8;
 }
-/* 🔁 手機 RWD 調整 */
+
+/* RWD: 讓圖片在手機滿版 */
 .about-img {
   width: 100%;
   max-width: 600px;
@@ -375,17 +374,11 @@ body {
 
 @media (max-width: 576px) {
   .about-img {
-    width: 100%; /* 手機寬度滿版 */
-    height: auto; /* 高度自動 */
+    width: 100%;
+    height: auto;
   }
 }
 
-.navbar.bg-dark,
-.navbar[data-bs-theme="dark"] {
-  /* nothing here, 用來增加選擇器命中率 */
-}
-
-/* 預設（白色）*/
 .navbar.bg-dark .navbar-brand,
 .navbar.bg-dark .nav-link,
 .navbar.bg-dark .cart-link,
@@ -396,7 +389,6 @@ body {
   transition: color 0.18s ease-in-out;
 }
 
-/* hover -> 黃色 */
 .navbar.bg-dark .navbar-brand:hover,
 .navbar.bg-dark .nav-link:hover,
 .navbar.bg-dark .cart-link:hover,
@@ -407,8 +399,6 @@ body {
   font-weight: 700 !important;
 }
 
-/* active（Vue Router 的 router-link-active，也可能有 .active）保持黃色 */
-/* 這裡把 router-link-active 與 .active 都覆蓋掉以保險 */
 .navbar.bg-dark .navbar-brand.router-link-active,
 .navbar.bg-dark .nav-link.router-link-active,
 .navbar.bg-dark .cart-link.router-link-active,
@@ -425,13 +415,6 @@ body {
   font-weight: 700 !important;
 }
 
-/* 小補強：focus 狀態也一併處理 */
-.navbar.bg-dark .nav-link:focus,
-.navbar[data-bs-theme="dark"] .nav-link:focus {
-  color: #f8d90f !important;
-}
-
-/* cart badge 定位 */
 .cart-link {
   position: relative;
   display: inline-block;
@@ -447,7 +430,6 @@ body {
   position: relative;
 }
 
-/* 預覽清單 */
 .cart-preview {
   animation: fadeIn 0.2s ease-in-out;
   position: absolute;

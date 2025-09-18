@@ -2,6 +2,7 @@
 import TitleList from "@/components/TitleList.vue";
 import ProductCarousel from "@/components/ProductCarousel.vue";
 import emitter from "@/methods/emitter";
+
 export default {
   data() {
     return {
@@ -19,7 +20,7 @@ export default {
       return this.cart.reduce((total, item) => total + item.qty, 0);
     },
     cartItems() {
-      return this.cart; // 或進一步處理顯示格式
+      return this.cart;
     },
     cartIconEvents() {
       return {
@@ -106,14 +107,12 @@ export default {
           alert("加入購物車失敗，請稍後再試");
         });
     },
-
     getCart() {
       const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.isLoading = true;
       this.$http
         .get(url)
         .then((res) => {
-          // 假設購物車清單在 res.data.data.carts 中
           if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
             this.cart = res.data.data.carts;
           } else {
@@ -131,7 +130,7 @@ export default {
       this.$http
         .delete(url)
         .then(() => {
-          this.cart = this.cart.filter((item) => item.id !== id); // 刪除後重新取得購物車
+          this.cart = this.cart.filter((item) => item.id !== id);
         })
         .catch(() => {
           alert("刪除商品失敗，請稍後再試");
@@ -267,21 +266,27 @@ export default {
 
     <!-- 最新消息 -->
     <div class="row mb-5">
-      <div class="col-12">
-        <TitleList />
+      <div class="col-12 d-flex justify-content-center">
+        <div class="content-wrapper">
+          <TitleList />
+        </div>
       </div>
     </div>
+
+    <!-- 熱賣產品 -->
     <div class="row mb-5">
-      <div class="col-12">
-        <h2 class="text-center fw-bold mb-4">熱賣產品</h2>
-        <ProductCarousel
-          v-if="products.length"
-          :products="products"
-          :cart-icon-ref="$refs.cartIcon"
-          :cart-qty="cartQty"
-          @add-to-cart="(id, $event) => addCart(id, $event)"
-          @card-click="getProduct"
-        />
+      <div class="col-12 d-flex justify-content-center">
+        <div class="content-wrapper">
+          <h2 class="text-center fw-bold mb-4">熱賣產品</h2>
+          <ProductCarousel
+            v-if="products.length"
+            :products="products"
+            :cart-icon-ref="$refs.cartIcon"
+            :cart-qty="cartQty"
+            @add-to-cart="(id, $event) => addCart(id, $event)"
+            @card-click="getProduct"
+          />
+        </div>
       </div>
     </div>
   </main>
@@ -300,17 +305,15 @@ html {
 body {
   background-color: #ffffe0;
 }
-/* 滑鼠 hover / 手機點擊選單項目時變色 */
-/* ============================
-   Navbar 顏色控制（覆蓋 Bootstrap）
-   - hover 時變黃
-   - active（router-link-active / .active）保持黃
-   ============================ */
 
-/* 通用目標：支援 .bg-dark 或 data-bs-theme="dark" 的 navbar */
+.content-wrapper {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 15px;
+}
 
-
-/* 預設（白色）*/
+/* navbar hover & active 設定 */
 .navbar.bg-dark .navbar-brand,
 .navbar.bg-dark .nav-link,
 .navbar.bg-dark .cart-link,
@@ -321,7 +324,6 @@ body {
   transition: color 0.18s ease-in-out;
 }
 
-/* hover -> 黃色 */
 .navbar.bg-dark .navbar-brand:hover,
 .navbar.bg-dark .nav-link:hover,
 .navbar.bg-dark .cart-link:hover,
@@ -332,8 +334,6 @@ body {
   font-weight: 700 !important;
 }
 
-/* active（Vue Router 的 router-link-active，也可能有 .active）保持黃色 */
-/* 這裡把 router-link-active 與 .active 都覆蓋掉以保險 */
 .navbar.bg-dark .navbar-brand.router-link-active,
 .navbar.bg-dark .nav-link.router-link-active,
 .navbar.bg-dark .cart-link.router-link-active,
@@ -350,7 +350,6 @@ body {
   font-weight: 700 !important;
 }
 
-/* 小補強：focus 狀態也一併處理 */
 .navbar.bg-dark .nav-link:focus,
 .navbar[data-bs-theme="dark"] .nav-link:focus {
   color: #f8d90f !important;
@@ -407,13 +406,13 @@ body {
     transform: translateY(0);
   }
 }
+
 .hero-section {
   position: relative;
-  height: 70vh; /* 高度可自行調 */
+  height: 70vh;
   background: url("@/assets/picture/basketballpart1.png") center center/cover no-repeat;
-
-  margin-top: -56px; /* 把 navbar 高度抵消 */
-  padding-top: 56px; /* 文字下移，避免被 navbar 蓋掉 */
+  margin-top: -56px;
+  padding-top: 56px;
 }
 
 .hero-overlay {
@@ -425,13 +424,5 @@ body {
 .hero-section .container {
   position: relative;
   z-index: 2;
-}
-.hero-content h1 {
-  margin-bottom: 0.75rem;
-  letter-spacing: 2px; /* 字距更霸氣 */
-}
-
-.hero-content p {
-  margin-bottom: 1.25rem;
 }
 </style>
