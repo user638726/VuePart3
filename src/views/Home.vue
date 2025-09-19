@@ -245,7 +245,7 @@ export default {
     </div>
   </nav>
 
-  <main class="flex-grow-1">
+  <main class="flex-grow-1 pagemain">
     <section class="hero-section d-flex align-items-center">
       <div class="hero-overlay"></div>
       <div class="container position-relative">
@@ -311,7 +311,7 @@ body {
   margin: 0 auto;
   padding: 0 15px;
 }
-main.flex-grow-1 {
+.pagemain{
   padding-bottom: 48px;
 }
 
