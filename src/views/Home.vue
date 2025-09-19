@@ -274,7 +274,7 @@ export default {
     </div>
 
     <!-- 熱賣產品 -->
-    <div class="row mb-5">
+    <div class="row">
       <div class="col-12 d-flex justify-content-center">
         <div class="content-wrapper">
           <h2 class="text-center fw-bold mb-4">熱賣產品</h2>
@@ -310,6 +310,9 @@ body {
   width: 100%;
   margin: 0 auto;
   padding: 0 15px;
+}
+main.flex-grow-1 {
+  padding-bottom: 48px;
 }
 
 /* navbar hover & active 設定 */
