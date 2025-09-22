@@ -41,7 +41,7 @@ export default {
   name: "TitleList",
   data() {
     return {
-      files: ["nba_6499.json", "nba_6500.json"],
+      files: ["nba_6500.json", "nba_6501.json"],
       posts: [],
       error: null,
     };
