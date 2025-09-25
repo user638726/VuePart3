@@ -122,7 +122,7 @@ export default {
         loadingItem: "",
       },
       showCartPreview: false,
-      files: ["nba_6501.json", "nba_6502.json"],
+      files: ["nba_6503.json", "nba_6504.json"],
       posts: [],
       error: null,
     };
