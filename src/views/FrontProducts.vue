@@ -383,6 +383,9 @@ html {
 body {
   background-color: #ffffe0;
 }
+.container {
+  background-color: #ffffe0;
+}
 .card {
   cursor: pointer;
   transition:
@@ -514,12 +517,12 @@ body {
   }
 }
 .products-main {
-  padding-bottom: 64px;
+  padding-bottom: 48px;
 }
 
 @media (max-width: 768px) {
   .products-main {
-    padding-bottom: 48px;
+    padding-bottom: 10px;
   }
 }
 
