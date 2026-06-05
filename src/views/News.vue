@@ -109,191 +109,192 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, reactive, ref } from "vue";
 import emitter from "@/methods/emitter";
-export default {
-  name: "News",
-  data() {
-    return {
-      products: [],
-      isLoading: false,
-      cart: [],
-      status: {
-        loadingItem: "",
-      },
-      showCartPreview: false,
-      files: ["nba01.json"],
-      posts: [],
-      error: null,
-    };
-  },
-  computed: {
-    cartQty() {
-      return this.cart.reduce((total, item) => total + item.qty, 0);
-    },
-    cartItems() {
-      return this.cart; // 或進一步處理顯示格式
-    },
-    cartIconEvents() {
-      return {
-        mouseenter: () => {
-          this.showCartPreview = true;
-        },
-        mouseleave: () => {
-          this.showCartPreview = false;
-        },
-      };
-    },
-  },
-  mounted() {
-    this.loadAllJsonFiles();
-    document.addEventListener("click", this.handleOutsideClick);
-    emitter.on("update-cart", this.getCart);
-    this.getProducts();
-    this.getCart();
-  },
-  methods: {
-    async loadAllJsonFiles() {
-      try {
-        const fetchPromises = this.files.map((file) =>
-          fetch(file).then((res) => {
-            if (!res.ok) throw new Error(`${file} 載入失敗`);
-            return res.json();
-          })
-        );
+import { useRouter } from "vue-router";
 
-        const allData = await Promise.all(fetchPromises);
+const { proxy } = getCurrentInstance();
+const router = useRouter();
 
-        allData.forEach((dataArray) => {
-          dataArray.forEach((item) => {
-            if (item.postInfo?.title && item.postInfo.title !== "unknown") {
-              this.posts.push(item);
-            }
-          });
-        });
-      } catch (err) {
-        this.error = err.message;
-        alert("載入失敗：" + err.message);
-      }
-    },
-    getFirstLink(post) {
-      const links = post.contentInfo?.link || [];
-      const imageLinks = post.contentInfo?.image || [];
-      const filtered = links.filter((link) => !imageLinks.includes(link));
-      return filtered[0] || links[0] || "#";
-    },
-    getProducts() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
-      this.isLoading = true;
-      this.$http.get(url).then((response) => {
-        this.products = response.data.products;
-        this.isLoading = false;
+const products = ref([]);
+const isLoading = ref(false);
+const cart = ref([]);
+const status = reactive({ loadingItem: "" });
+const showCartPreview = ref(false);
+const files = ["nba01.json"];
+const posts = ref([]);
+const error = ref(null);
+
+const cartIcon = ref(null);
+
+const cartQty = computed(() => cart.value.reduce((total, item) => total + item.qty, 0));
+const cartItems = computed(() => cart.value);
+const cartIconEvents = computed(() => ({
+  mouseenter: () => {
+    showCartPreview.value = true;
+  },
+  mouseleave: () => {
+    showCartPreview.value = false;
+  },
+}));
+
+async function loadAllJsonFiles() {
+  try {
+    const fetchPromises = files.map((file) =>
+      fetch(file).then((res) => {
+        if (!res.ok) throw new Error(`${file} 載入失敗`);
+        return res.json();
+      })
+    );
+
+    const allData = await Promise.all(fetchPromises);
+
+    allData.forEach((dataArray) => {
+      dataArray.forEach((item) => {
+        if (item.postInfo?.title && item.postInfo.title !== "unknown") {
+          posts.value.push(item);
+        }
       });
-    },
-    getProduct(id) {
-      this.$router.push(`/user/product/${id}`);
-    },
-    animateToCart(event) {
-      const productCard = event.target.closest(".card");
-      const productImg = productCard?.querySelector(".card-img-top");
-      const cartIcon = this.$refs.cartIcon;
+    });
+  } catch (err) {
+    error.value = err.message;
+    alert("載入失敗：" + err.message);
+  }
+}
 
-      if (!productImg || !cartIcon) {
-        console.warn("動畫失敗：無法找到圖片或購物車圖示");
-        return;
+function getFirstLink(post) {
+  const links = post.contentInfo?.link || [];
+  const imageLinks = post.contentInfo?.image || [];
+  const filtered = links.filter((link) => !imageLinks.includes(link));
+  return filtered[0] || links[0] || "#";
+}
+
+function getProducts() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
+  isLoading.value = true;
+  proxy.$http.get(url).then((response) => {
+    products.value = response.data.products;
+    isLoading.value = false;
+  });
+}
+
+// eslint-disable-next-line no-unused-vars
+function getProduct(id) {
+  router.push(`/user/product/${id}`);
+}
+
+function animateToCart(event) {
+  const productCard = event.target.closest(".card");
+  const productImg = productCard?.querySelector(".card-img-top");
+  const iconEl = cartIcon.value;
+
+  if (!productImg || !iconEl) {
+    console.warn("動畫失敗：無法找到圖片或購物車圖示");
+    return;
+  }
+
+  const imgClone = productImg.cloneNode(true);
+  const imgRect = productImg.getBoundingClientRect();
+  const cartRect = iconEl.getBoundingClientRect();
+
+  imgClone.style.position = "fixed";
+  imgClone.style.left = `${imgRect.left}px`;
+  imgClone.style.top = `${imgRect.top}px`;
+  imgClone.style.width = `${imgRect.width}px`;
+  imgClone.style.height = `${imgRect.height}px`;
+  imgClone.style.zIndex = 1000;
+  imgClone.style.transition = "all 0.8s ease-in-out";
+
+  document.body.appendChild(imgClone);
+
+  requestAnimationFrame(() => {
+    imgClone.style.left = `${cartRect.left}px`;
+    imgClone.style.top = `${cartRect.top}px`;
+    imgClone.style.width = "0px";
+    imgClone.style.height = "0px";
+    imgClone.style.opacity = "0.5";
+  });
+
+  imgClone.addEventListener("transitionend", () => {
+    imgClone.remove();
+  });
+}
+
+// eslint-disable-next-line no-unused-vars
+function addCart(id, event) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  status.loadingItem = id;
+
+  const cartPayload = {
+    product_id: id,
+    qty: 1,
+  };
+
+  animateToCart(event);
+
+  proxy.$http
+    .post(url, { data: cartPayload })
+    .then(() => {
+      status.loadingItem = "";
+      getCart();
+    })
+    .catch(() => {
+      status.loadingItem = "";
+      alert("加入購物車失敗，請稍後再試");
+    });
+}
+
+function getCart() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  isLoading.value = true;
+  proxy.$http
+    .get(url)
+    .then((res) => {
+      if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
+        cart.value = res.data.data.carts;
+      } else {
+        cart.value = [];
       }
+      isLoading.value = false;
+    })
+    .catch(() => {
+      cart.value = [];
+      isLoading.value = false;
+    });
+}
 
-      const imgClone = productImg.cloneNode(true);
-      const imgRect = productImg.getBoundingClientRect();
-      const cartRect = cartIcon.getBoundingClientRect();
+function removeCartItem(id) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
+  proxy.$http
+    .delete(url)
+    .then(() => {
+      cart.value = cart.value.filter((item) => item.id !== id);
+    })
+    .catch(() => {
+      alert("刪除商品失敗，請稍後再試");
+    });
+}
 
-      imgClone.style.position = "fixed";
-      imgClone.style.left = `${imgRect.left}px`;
-      imgClone.style.top = `${imgRect.top}px`;
-      imgClone.style.width = `${imgRect.width}px`;
-      imgClone.style.height = `${imgRect.height}px`;
-      imgClone.style.zIndex = 1000;
-      imgClone.style.transition = "all 0.8s ease-in-out";
+function handleOutsideClick(event) {
+  const iconEl = cartIcon.value;
+  if (iconEl && !iconEl.contains(event.target)) {
+    showCartPreview.value = false;
+  }
+}
 
-      document.body.appendChild(imgClone);
+onMounted(() => {
+  loadAllJsonFiles();
+  document.addEventListener("click", handleOutsideClick);
+  emitter.on("update-cart", getCart);
+  getProducts();
+  getCart();
+});
 
-      requestAnimationFrame(() => {
-        imgClone.style.left = `${cartRect.left}px`;
-        imgClone.style.top = `${cartRect.top}px`;
-        imgClone.style.width = "0px";
-        imgClone.style.height = "0px";
-        imgClone.style.opacity = "0.5";
-      });
-
-      imgClone.addEventListener("transitionend", () => {
-        imgClone.remove();
-      });
-    },
-    addCart(id, event) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      this.status.loadingItem = id;
-
-      const cart = {
-        product_id: id,
-        qty: 1,
-      };
-
-      this.animateToCart(event);
-
-      this.$http
-        .post(url, { data: cart })
-        .then(() => {
-          this.status.loadingItem = "";
-          this.getCart();
-        })
-        .catch(() => {
-          this.status.loadingItem = "";
-          alert("加入購物車失敗，請稍後再試");
-        });
-    },
-
-    getCart() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      this.isLoading = true;
-      this.$http
-        .get(url)
-        .then((res) => {
-          // 假設購物車清單在 res.data.data.carts 中
-          if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
-            this.cart = res.data.data.carts;
-          } else {
-            this.cart = [];
-          }
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.cart = [];
-          this.isLoading = false;
-        });
-    },
-    removeCartItem(id) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
-      this.$http
-        .delete(url)
-        .then(() => {
-          this.cart = this.cart.filter((item) => item.id !== id); // 刪除後重新取得購物車
-        })
-        .catch(() => {
-          alert("刪除商品失敗，請稍後再試");
-        });
-    },
-    handleOutsideClick(event) {
-      const cartIcon = this.$refs.cartIcon;
-      if (cartIcon && !cartIcon.contains(event.target)) {
-        this.showCartPreview = false;
-      }
-    },
-  },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleOutsideClick);
-    emitter.off("update-cart", this.getCart);
-  },
-};
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleOutsideClick);
+  emitter.off("update-cart", getCart);
+});
 </script>
 
 <style>

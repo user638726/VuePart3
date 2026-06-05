@@ -56,13 +56,13 @@
                   </tr>
                   <tr>
                     <th>下單時間</th>
-                    <td>{{ $filters.date(tempOrder.create_at) }}</td>
+                    <td>{{ date(tempOrder.create_at) }}</td>
                   </tr>
                   <tr>
                     <th>付款時間</th>
                     <td>
                       <span v-if="tempOrder.paid_date">
-                        {{ $filters.date(tempOrder.paid_date) }}
+                        {{ date(tempOrder.paid_date) }}
                       </span>
                       <span v-else>時間不正確</span>
                     </td>
@@ -79,7 +79,7 @@
                   <tr>
                     <th>總金額</th>
                     <td>
-                      {{ $filters.currency(tempOrder.total) }}
+                      {{ currency(tempOrder.total) }}
                     </td>
                   </tr>
                 </tbody>
@@ -96,7 +96,7 @@
                     </th>
                     <td>{{ item.qty }} / {{ item.product.unit }}</td>
                     <td class="text-end">
-                      {{ $filters.currency(item.final_total) }}
+                      {{ currency(item.final_total) }}
                     </td>
                   </tr>
                 </tbody>
@@ -120,41 +120,40 @@
     </div>
   </div>
 </template>
-<script>
-import modalMixin from "@/mixins/modalMixin";
 
-export default {
-  name: "OrderModal",
-  props: {
-    order: {
-      type: Object,
-      default() {
-        return {};
-      },
+<script setup>
+import { ref, watch } from "vue";
+import { useModal } from "@/composables/useModal";
+import { currency, date } from "@/methods/filters";
+
+const props = defineProps({
+  order: {
+    type: Object,
+    default() {
+      return {};
     },
   },
-  data() {
-    return {
-      status: {},
-      modal: "",
-      tempOrder: {},
-      isPaid: false,
-    };
-  },
-  emits: ["update-product", "update-order"],
-  mixins: [modalMixin],
-  inject: ["emitter"],
-  watch: {
-    order() {
-      this.tempOrder = this.order;
-      this.isPaid = this.tempOrder.is_paid;
-    },
-  },
-  methods: {
-    confirmOrder() {
-      this.$emit("update-order", this.tempOrder);
-      this.hideModal();
-    },
-  },
-};
+});
+
+const emit = defineEmits(["update-product", "update-order"]);
+
+const tempOrder = ref({});
+const isPaid = ref(false);
+
+const { modal, showModal, hideModal } = useModal();
+
+watch(
+  () => props.order,
+  (order) => {
+    tempOrder.value = order;
+    isPaid.value = tempOrder.value.is_paid;
+  }
+);
+
+function confirmOrder() {
+  emit("update-order", tempOrder.value);
+  hideModal();
+}
+
+defineExpose({ showModal, hideModal });
 </script>

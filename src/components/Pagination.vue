@@ -25,15 +25,12 @@
   </nav>
 </template>
 
-<script>
-// :pages="{ 頁碼資訊 }"
-// @emitPages="更新頁面事件"
-export default {
-  props: ["pages"],
-  methods: {
-    updatePage(page) {
-      this.$emit("emit-pages", page);
-    },
-  },
-};
+<script setup>
+defineProps(["pages"]);
+
+const emit = defineEmits(["emit-pages"]);
+
+function updatePage(page) {
+  emit("emit-pages", page);
+}
 </script>

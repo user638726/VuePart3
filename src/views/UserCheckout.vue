@@ -76,51 +76,50 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      order: {
-        user: {},
-      },
-      orderId: "",
-      isLoading: false,
-      currentStep: 2,
-    };
-  },
-  methods: {
-    getOrder() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${this.orderId}`;
+<script setup>
+import { getCurrentInstance, onBeforeMount, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-      this.$http.get(url).then((res) => {
-        if (res.data.success) {
-          this.order = res.data.order;
-        }
-      });
-    },
-    payOrder() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${this.orderId}`;
+const { proxy } = getCurrentInstance();
+const route = useRoute();
+const router = useRouter();
 
-      this.$http.post(url).then((res) => {
-        if (res.data.success) {
-          this.getOrder();
-        }
-        this.currentStep = 3;
-        setTimeout(() => {
-          this.$router.push(`/frontproducts`);
-        }, 3000);
-      });
-    },
-    formatCurrency(value) {
-      if (typeof value !== "number") return value;
-      return "NT$" + value.toLocaleString("zh-TW");
-    },
-  },
-  created() {
-    this.orderId = this.$route.params.orderId;
-    this.getOrder();
-  },
-};
+const order = ref({ user: {} });
+const orderId = ref("");
+const isLoading = ref(false);
+const currentStep = ref(2);
+
+function getOrder() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order/${orderId.value}`;
+  proxy.$http.get(url).then((res) => {
+    if (res.data.success) {
+      order.value = res.data.order;
+    }
+  });
+}
+
+function payOrder() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/pay/${orderId.value}`;
+  proxy.$http.post(url).then((res) => {
+    if (res.data.success) {
+      getOrder();
+    }
+    currentStep.value = 3;
+    setTimeout(() => {
+      router.push(`/frontproducts`);
+    }, 3000);
+  });
+}
+
+function formatCurrency(value) {
+  if (typeof value !== "number") return value;
+  return "NT$" + value.toLocaleString("zh-TW");
+}
+
+onBeforeMount(() => {
+  orderId.value = route.params.orderId;
+  getOrder();
+});
 </script>
 <style scoped>
 

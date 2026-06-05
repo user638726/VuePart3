@@ -36,29 +36,26 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      user: {
-        username: "",
-        password: "",
-      },
-    };
-  },
-  methods: {
-    signIn() {
-      // 在這裡處理登入邏輯
+<script setup>
+import { reactive, getCurrentInstance } from "vue";
+import { useRouter } from "vue-router";
 
-      const api = `${process.env.VUE_APP_API}admin/signin`;
-      this.$http.post(api, this.user).then((res) => {
-        if (res.data.success) {
-          const { token, expired } = res.data;
-          document.cookie = `hexToken=${token};expires=${new Date(expired)}`;
-          this.$router.push("./dashboard/products");
-        }
-      });
-    },
-  },
-};
+const router = useRouter();
+const { proxy } = getCurrentInstance();
+
+const user = reactive({
+  username: "",
+  password: "",
+});
+
+function signIn() {
+  const api = `${process.env.VUE_APP_API}admin/signin`;
+  proxy.$http.post(api, user).then((res) => {
+    if (res.data.success) {
+      const { token, expired } = res.data;
+      document.cookie = `hexToken=${token};expires=${new Date(expired)}`;
+      router.push("./dashboard/products");
+    }
+  });
+}
 </script>

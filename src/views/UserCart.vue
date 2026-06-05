@@ -208,136 +208,125 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import Swal from "sweetalert2";
 import emitter from "@/methods/emitter";
-export default {
-  data() {
-    return {
-      products: [],
-      product: {},
-      isLoading: false,
-      status: {
-        loadingItem: "",
-      },
-      form: {
-        user: {
-          name: "",
-          email: "",
-          tel: "",
-          address: "",
-        },
-        message: "",
-      },
-      cart: {},
-      coupon_code: "",
-      currentStep: 1,
-    };
-  },
-  methods: {
-    getProducts() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
-      this.isLoading = true;
-      this.$http.get(url).then((response) => {
-        this.products = response.data.products;
-        this.isLoading = false;
-      });
-    },
-    getProduct(id) {
-      this.$router.push(`/user/product/${id}`);
-    },
-    addCart(id) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      this.status.loadingItem = id;
-      const cart = {
-        product_id: id,
-        qty: 1,
-      };
-      this.$http.post(url, { data: cart }).then(() => {
-        this.status.loadingItem = "";
-        emitter.emit("update-cart");
-        this.getCart();
-      });
-    },
-    getCart() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      this.isLoading = true;
-      this.$http.get(url).then((res) => {
-        this.cart = res.data.data;
-        this.isLoading = false;
-      });
-    },
-    updateCart(item) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
-      this.isLoading = true;
-      this.status.loadingItem = item.id;
-      const cart = {
-        product_id: item.product.id,
-        qty: item.qty,
-      };
-      this.$http.put(url, { data: cart }).then(() => {
-        emitter.emit("update-cart");
-        this.status.loadingItem = "";
-        this.getCart();
-      });
-    },
-    removeCartItem(id) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
-      this.status.loadingItem = id;
-      this.$http.delete(url).then(() => {
-        this.status.loadingItem = "";
-        emitter.emit("update-cart");
-        this.getCart(); // 重新取得購物車資料
-      });
-    },
-    addCouponCode() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
-      const coupon = {
-        code: this.coupon_code,
-      };
-      this.$http
-        .post(url, { data: coupon })
-        .then((res) => {
-          if (!res.data.success) {
-            alert(res.data.message || "優惠碼無效或已過期");
-            return;
-          }
-          this.getCart();
-        })
-        .catch((error) => {
-          const errorMessage =
-            error?.response?.data?.message || "優惠碼無效或已過期";
-          alert(errorMessage);
-        });
-    },
-    createOrder() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
-      const order = this.form;
-      this.$http.post(url, { data: order }).then((res) => {
-        emitter.emit("update-cart");
-        const orderId = res.data.orderId; // 從 API 回傳中取得 orderId
-        this.$router.push(`/user/checkout/${orderId}`);
-      });
-    },
-  },
-  mounted() {
-    emitter.on("update-cart", this.getCart);
-  },
-  beforeUnmount() {
-    emitter.off("update-cart", this.getCart);
-  },
+import { getCurrentInstance, onBeforeUnmount, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
-  created() {
-    Swal.fire({
-      icon: "info",
-      title: "優惠提醒",
-      text: "請輸入優惠碼 GOATM，就可以享有 50% 折扣！",
-      confirmButtonText: "了解",
-    });
-    this.getProducts();
-    this.getCart();
+const { proxy } = getCurrentInstance();
+const router = useRouter();
+
+const products = ref([]);
+const isLoading = ref(false);
+const status = reactive({ loadingItem: "" });
+
+const form = reactive({
+  user: {
+    name: "",
+    email: "",
+    tel: "",
+    address: "",
   },
-};
+  message: "",
+});
+
+const cart = ref({});
+const coupon_code = ref("");
+const currentStep = ref(1);
+
+function getProducts() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/products/all`;
+  isLoading.value = true;
+  proxy.$http.get(url).then((response) => {
+    products.value = response.data.products;
+    isLoading.value = false;
+  });
+}
+
+function getCart() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  isLoading.value = true;
+  proxy.$http.get(url).then((res) => {
+    cart.value = res.data.data;
+    isLoading.value = false;
+  });
+}
+
+function updateCart(item) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
+  isLoading.value = true;
+  status.loadingItem = item.id;
+
+  const cartPayload = {
+    product_id: item.product.id,
+    qty: item.qty,
+  };
+
+  proxy.$http.put(url, { data: cartPayload }).then(() => {
+    emitter.emit("update-cart");
+    status.loadingItem = "";
+    getCart();
+  });
+}
+
+function removeCartItem(id) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
+  status.loadingItem = id;
+  proxy.$http.delete(url).then(() => {
+    status.loadingItem = "";
+    emitter.emit("update-cart");
+    getCart();
+  });
+}
+
+function addCouponCode() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
+  const coupon = {
+    code: coupon_code.value,
+  };
+  proxy.$http
+    .post(url, { data: coupon })
+    .then((res) => {
+      if (!res.data.success) {
+        alert(res.data.message || "優惠碼無效或已過期");
+        return;
+      }
+      getCart();
+    })
+    .catch((error) => {
+      const errorMessage =
+        error?.response?.data?.message || "優惠碼無效或已過期";
+      alert(errorMessage);
+    });
+}
+
+function createOrder() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
+  const order = form;
+  proxy.$http.post(url, { data: order }).then((res) => {
+    emitter.emit("update-cart");
+    const orderId = res.data.orderId;
+    router.push(`/user/checkout/${orderId}`);
+  });
+}
+
+onMounted(() => {
+  Swal.fire({
+    icon: "info",
+    title: "優惠提醒",
+    text: "請輸入優惠碼 GOATM，就可以享有 50% 折扣！",
+    confirmButtonText: "了解",
+  });
+
+  emitter.on("update-cart", getCart);
+  getProducts();
+  getCart();
+});
+
+onBeforeUnmount(() => {
+  emitter.off("update-cart", getCart);
+});
 </script>
 <style>
 html {

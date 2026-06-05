@@ -37,7 +37,7 @@
           <button
             type="button"
             class="btn btn-danger"
-            @click="$emit('del-item')"
+            @click="emit('del-item')"
           >
             確認刪除
           </button>
@@ -46,18 +46,17 @@
     </div>
   </div>
 </template>
-<script>
-import modalMixin from "@/mixins/modalMixin";
 
-export default {
-  props: {
-    item: {},
-  },
-  data() {
-    return {
-      modal: "",
-    };
-  },
-  mixins: [modalMixin],
-};
+<script setup>
+import { useModal } from "@/composables/useModal";
+
+defineProps({
+  item: {},
+});
+
+const emit = defineEmits(["del-item"]);
+
+const { modal, showModal, hideModal } = useModal();
+
+defineExpose({ showModal, hideModal });
 </script>

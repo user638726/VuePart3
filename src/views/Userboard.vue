@@ -92,97 +92,86 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { computed, getCurrentInstance, onBeforeUnmount, onMounted, provide, ref } from "vue";
+import { useRoute } from "vue-router";
 import emitter from "@/methods/emitter";
 import ToastMessages from "@/components/ToastMessages.vue";
 
-export default {
-  components: {
-    ToastMessages,
-  },
-  data() {
-    return {
-      cart: [],
-      isLoading: false,
-      showCartPreview: false,
-    };
-  },
-  computed: {
-    cartQty() {
-      return this.cart.reduce((total, item) => total + item.qty, 0);
-    },
-    cartItems() {
-      return this.cart;
-    },
-    cartIconEvents() {
-      return {
-        mouseenter: () => {
-          this.showCartPreview = true;
-        },
-        mouseleave: () => {
-          this.showCartPreview = false;
-        },
-      };
-    },
-  },
-  methods: {
-    getCart() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      this.isLoading = true;
-      this.$http
-        .get(url)
-        .then((res) => {
-          // 假設購物車清單在 res.data.data.carts 中
-          if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
-            this.cart = res.data.data.carts;
-          } else {
-            this.cart = [];
-          }
-          this.isLoading = false;
-        })
-        .catch(() => {
-          this.cart = [];
-          this.isLoading = false;
-        });
-    },
-    removeCartItem(id) {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
-      this.$http
-        .delete(url)
-        .then(() => {
-          this.cart = this.cart.filter((item) => item.id !== id);
-          emitter.emit("update-cart"); // 刪除後重新取得購物車
-          if (this.$route.path === "/user/cart") {
-            this.getCart();
-          }
-        })
-        .catch(() => {
-          alert("刪除商品失敗，請稍後再試");
-        });
-    },
-    handleOutsideClick(event) {
-      const cartIcon = this.$refs.cartIcon;
-      if (cartIcon && !cartIcon.contains(event.target)) {
-        this.showCartPreview = false;
-      }
-    },
-  },
-  provide() {
-    return {
-      emitter,
-    };
-  },
+const { proxy } = getCurrentInstance();
+const route = useRoute();
 
-  mounted() {
-    this.getCart();
-    document.addEventListener("click", this.handleOutsideClick);
-    emitter.on("update-cart", this.getCart);
+provide("emitter", emitter);
+
+const cart = ref([]);
+const isLoading = ref(false);
+const showCartPreview = ref(false);
+
+const cartIcon = ref(null);
+
+const cartQty = computed(() => cart.value.reduce((total, item) => total + item.qty, 0));
+const cartItems = computed(() => cart.value);
+const cartIconEvents = computed(() => ({
+  mouseenter: () => {
+    showCartPreview.value = true;
   },
-  beforeUnmount() {
-    document.removeEventListener("click", this.handleOutsideClick);
-    emitter.off("update-cart", this.getCart);
+  mouseleave: () => {
+    showCartPreview.value = false;
   },
-};
+}));
+
+function getCart() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  isLoading.value = true;
+  proxy.$http
+    .get(url)
+    .then((res) => {
+      if (res.data && res.data.data && Array.isArray(res.data.data.carts)) {
+        cart.value = res.data.data.carts;
+      } else {
+        cart.value = [];
+      }
+      isLoading.value = false;
+    })
+    .catch(() => {
+      cart.value = [];
+      isLoading.value = false;
+    });
+}
+
+function removeCartItem(id) {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${id}`;
+  proxy.$http
+    .delete(url)
+    .then(() => {
+      cart.value = cart.value.filter((item) => item.id !== id);
+      emitter.emit("update-cart");
+      if (route.path === "/user/cart") {
+        getCart();
+      }
+    })
+    .catch(() => {
+      alert("刪除商品失敗，請稍後再試");
+    });
+}
+
+function handleOutsideClick(event) {
+  const iconEl = cartIcon.value;
+  if (iconEl && !iconEl.contains(event.target)) {
+    showCartPreview.value = false;
+  }
+}
+
+onMounted(() => {
+  getCart();
+  document.addEventListener("click", handleOutsideClick);
+  emitter.on("update-cart", getCart);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleOutsideClick);
+  emitter.off("update-cart", getCart);
+});
 </script>
 <style>
 /* 滑鼠 hover / 手機點擊選單項目時變色 */

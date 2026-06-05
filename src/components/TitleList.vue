@@ -36,56 +36,49 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "TitleList",
-  data() {
-    return {
-      files: ["nba01.json"],
-      posts: [],
-      error: null,
-    };
-  },
-  computed: {
-    limitedPosts() {
-      return this.posts.slice(0, 5);
-    },
-  },
-  mounted() {
-    this.loadAllJsonFiles();
-  },
-  methods: {
-    async loadAllJsonFiles() {
-      try {
-        const fetchPromises = this.files.map((file) =>
-          fetch(file).then((res) => {
-            if (!res.ok) throw new Error(`${file} 載入失敗`);
-            return res.json();
-          })
-        );
+<script setup>
+import { ref, computed, onMounted } from "vue";
 
-        const allData = await Promise.all(fetchPromises);
+const files = ["nba01.json"];
+const posts = ref([]);
+const error = ref(null);
 
-        allData.forEach((dataArray) => {
-          dataArray.forEach((item) => {
-            if (item.postInfo?.title && item.postInfo.title !== "unknown") {
-              this.posts.push(item);
-            }
-          });
-        });
-      } catch (err) {
-        this.error = err.message;
-        alert("載入失敗：" + err.message);
-      }
-    },
-    getFirstLink(post) {
-      const links = post.contentInfo?.link || [];
-      const imageLinks = post.contentInfo?.image || [];
-      const filtered = links.filter((link) => !imageLinks.includes(link));
-      return filtered[0] || links[0] || "#";
-    },
-  },
-};
+const limitedPosts = computed(() => posts.value.slice(0, 5));
+
+async function loadAllJsonFiles() {
+  try {
+    const fetchPromises = files.map((file) =>
+      fetch(file).then((res) => {
+        if (!res.ok) throw new Error(`${file} 載入失敗`);
+        return res.json();
+      })
+    );
+
+    const allData = await Promise.all(fetchPromises);
+
+    allData.forEach((dataArray) => {
+      dataArray.forEach((item) => {
+        if (item.postInfo?.title && item.postInfo.title !== "unknown") {
+          posts.value.push(item);
+        }
+      });
+    });
+  } catch (err) {
+    error.value = err.message;
+    alert("載入失敗：" + err.message);
+  }
+}
+
+function getFirstLink(post) {
+  const links = post.contentInfo?.link || [];
+  const imageLinks = post.contentInfo?.image || [];
+  const filtered = links.filter((link) => !imageLinks.includes(link));
+  return filtered[0] || links[0] || "#";
+}
+
+onMounted(() => {
+  loadAllJsonFiles();
+});
 </script>
 
 <style scoped>
@@ -137,4 +130,3 @@ export default {
   text-decoration: underline;
 }
 </style>
-

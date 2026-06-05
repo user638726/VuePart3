@@ -70,81 +70,79 @@
   <Pagination :pages="pagination" @emit-pages="getOrders"></Pagination>
 </template>
 
-<script>
+<script setup>
+import { getCurrentInstance, onBeforeMount, ref } from "vue";
 import DelModal from "@/components/DelModal.vue";
 import OrderModal from "@/components/OrderModal.vue";
 import Pagination from "@/components/Pagination.vue";
 
-export default {
-  data() {
-    return {
-      orders: {},
-      isNew: false,
-      pagination: {},
-      isLoading: false,
-      tempOrder: {},
-      currentPage: 1,
-    };
-  },
-  components: {
-    Pagination,
-    DelModal,
-    OrderModal,
-  },
-  methods: {
-    getOrders(currentPage = 1) {
-      this.currentPage = currentPage;
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${currentPage}`;
-      this.isLoading = true;
-      this.$http.get(url, this.tempProduct).then((response) => {
-        this.orders = response.data.orders;
-        this.pagination = response.data.pagination;
-        this.isLoading = false;
-        console.log(response);
-      });
-    },
-    openModal(isNew, item) {
-      this.tempOrder = { ...item };
-      this.isNew = false;
-      const orderComponent = this.$refs.orderModal;
-      orderComponent.showModal();
-    },
-    openDelOrderModal(item) {
-      this.tempOrder = { ...item };
-      const delComponent = this.$refs.delModal;
-      delComponent.showModal();
-    },
-    updatePaid(item) {
-      this.isLoading = true;
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${item.id}`;
-      const paid = {
-        is_paid: item.is_paid,
-      };
-      this.$http.put(api, { data: paid }).then((response) => {
-        this.isLoading = false;
-        this.getOrders(this.currentPage);
-        this.$httpMessageState(response, "更新付款狀態");
-      });
-    },
-    delOrder() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${this.tempOrder.id}`;
-      this.isLoading = true;
-      this.$http.delete(url).then((response) => {
-        console.log(response);
-        const delComponent = this.$refs.delModal;
-        delComponent.hideModal();
-        this.getOrders(this.currentPage);
-      });
-    },
-    handleUpdateOrder(order) {
-      console.log("接收到更新的訂單：", order);
-      this.$refs.orderModal.hideModal();
-      this.getOrders(this.currentPage);
-    },
-  },
-  created() {
-    this.getOrders();
-    console.log(process.env.VUE_APP_API);
-  },
-};
+const { proxy } = getCurrentInstance();
+
+const orders = ref({});
+const pagination = ref({});
+const isLoading = ref(false);
+const tempOrder = ref({});
+const currentPage = ref(1);
+const isNew = ref(false);
+
+const orderModal = ref(null);
+const delModal = ref(null);
+
+function getOrders(page = 1) {
+  currentPage.value = page;
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/orders?page=${page}`;
+  isLoading.value = true;
+  proxy.$http.get(url).then((response) => {
+    orders.value = response.data.orders;
+    pagination.value = response.data.pagination;
+    isLoading.value = false;
+    console.log(response);
+  });
+}
+
+function openModal(_isNew, item) {
+  tempOrder.value = { ...item };
+  isNew.value = false;
+  orderModal.value.showModal();
+}
+
+function openDelOrderModal(item) {
+  tempOrder.value = { ...item };
+  delModal.value.showModal();
+}
+
+function updatePaid(item) {
+  isLoading.value = true;
+  const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${item.id}`;
+  const paid = {
+    is_paid: item.is_paid,
+  };
+
+  proxy.$http.put(api, { data: paid }).then((response) => {
+    isLoading.value = false;
+    getOrders(currentPage.value);
+    proxy.$httpMessageState(response, "更新付款狀態");
+  });
+}
+
+function delOrder() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/order/${tempOrder.value.id}`;
+  isLoading.value = true;
+  proxy.$http.delete(url).then((response) => {
+    console.log(response);
+    delModal.value.hideModal();
+    getOrders(currentPage.value);
+  });
+}
+
+function handleUpdateOrder(_order) {
+  console.log("接收到更新的訂單：", _order);
+  orderModal.value.hideModal();
+  getOrders(currentPage.value);
+}
+
+onBeforeMount(() => {
+  getOrders();
+  console.log(process.env.VUE_APP_API);
+});
 </script>

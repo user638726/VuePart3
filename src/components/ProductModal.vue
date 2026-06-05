@@ -193,7 +193,7 @@
           <button
             type="button"
             class="btn btn-primary"
-            @click="$emit('update-product', tempProduct)"
+            @click="emit('update-product', tempProduct)"
           >
             確認
           </button>
@@ -203,42 +203,45 @@
   </div>
 </template>
 
-<script>
-import modalMixin from "@/mixins/modalMixin";
+<script setup>
+import { ref, watch, getCurrentInstance } from "vue";
+import { useModal } from "@/composables/useModal";
 
-export default {
-  props: {
-    product: {
-      type: Object,
-      default() {
-        return {};
-      },
+const props = defineProps({
+  product: {
+    type: Object,
+    default() {
+      return {};
     },
   },
-  watch: {
-    product() {
-      this.tempProduct = this.product;
-    },
-  },
-  data() {
-    return {
-      modal: {},
-      tempProduct: {},
-    };
-  },
-  methods: {
-    uploadFile() {
-      const uploadFile = this.$refs.fileInput.files[0];
-      const formData = new FormData();
-      formData.append("file-to-upload", uploadFile);
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`;
-      this.$http.post(url, formData).then((response) => {
-        if (response.data.success) {
-          this.tempProduct.imageUrl = response.data.imageUrl;
-        }
-      });
-    },
-  },
-  mixins: [modalMixin],
-};
+});
+
+const emit = defineEmits(["update-product"]);
+
+const { proxy } = getCurrentInstance();
+const tempProduct = ref({});
+const fileInput = ref(null);
+
+const { modal, showModal, hideModal } = useModal();
+
+watch(
+  () => props.product,
+  (product) => {
+    tempProduct.value = product;
+  }
+);
+
+function uploadFile() {
+  const uploadFileData = fileInput.value.files[0];
+  const formData = new FormData();
+  formData.append("file-to-upload", uploadFileData);
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`;
+  proxy.$http.post(url, formData).then((response) => {
+    if (response.data.success) {
+      tempProduct.value.imageUrl = response.data.imageUrl;
+    }
+  });
+}
+
+defineExpose({ showModal, hideModal });
 </script>

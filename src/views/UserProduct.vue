@@ -157,82 +157,81 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import emitter from "@/methods/emitter";
-export default {
-  data() {
-    return {
-      product: {},
-      id: "",
-      isLoading: false,
-      qty: 1,
-    };
-  },
-  methods: {
-    getProduct() {
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${this.id}`;
-      this.isLoading = true;
-      this.$http.get(api).then((response) => {
-        this.isLoading = false;
-        if (response.data.success) {
-          this.product = response.data.product;
-        }
-      });
-    },
-    validateQty() {
-      if (!this.qty || this.qty < 1) {
-        this.qty = 1;
-      } else {
-        this.qty = Math.floor(this.qty); // 去除小數
-      }
-    },
-    increaseQty() {
-      this.qty++;
-    },
-    decreaseQty() {
-      if (this.qty > 1) {
-        this.qty--;
-      }
-    },
-    blockNonNumber(e) {
-      // 允許：數字鍵、刪除鍵、Backspace、Tab、方向鍵
-      const allowedKeys = [
-        "Backspace",
-        "Delete",
-        "Tab",
-        "ArrowLeft",
-        "ArrowRight",
-      ];
-      if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) {
-        e.preventDefault();
-      }
-    },
+import { getCurrentInstance, onBeforeMount, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
-    addToCart(id) {
-      this.validateQty();
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
-      const cart = {
-        product_id: id,
-        qty: this.qty,
-      };
-      this.isLoading = true;
-      this.$http.post(url, { data: cart }).then((res) => {
-        this.isLoading = false;
-        this.$httpMessageState(res, "加入購物車");
-        emitter.emit("update-cart");
-        this.$router.push("/user/cart");
-      });
-    },
-    formatCurrency(num) {
-      const safeNum = Number(num) || 0;
-      return `NT$ ${safeNum.toLocaleString()}`;
-    },
-  },
-  created() {
-    this.id = this.$route.params.productId;
-    this.getProduct();
-  },
-};
+const { proxy } = getCurrentInstance();
+const route = useRoute();
+const router = useRouter();
+
+const product = ref({});
+const id = ref("");
+const isLoading = ref(false);
+const qty = ref(1);
+
+function getProduct() {
+  const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/product/${id.value}`;
+  isLoading.value = true;
+  proxy.$http.get(api).then((response) => {
+    isLoading.value = false;
+    if (response.data.success) {
+      product.value = response.data.product;
+    }
+  });
+}
+
+function validateQty() {
+  if (!qty.value || qty.value < 1) {
+    qty.value = 1;
+  } else {
+    qty.value = Math.floor(qty.value);
+  }
+}
+
+function increaseQty() {
+  qty.value++;
+}
+
+function decreaseQty() {
+  if (qty.value > 1) {
+    qty.value--;
+  }
+}
+
+function blockNonNumber(e) {
+  const allowedKeys = ["Backspace", "Delete", "Tab", "ArrowLeft", "ArrowRight"];
+  if (!/[0-9]/.test(e.key) && !allowedKeys.includes(e.key)) {
+    e.preventDefault();
+  }
+}
+
+function addToCart(productId) {
+  validateQty();
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+  const cartPayload = {
+    product_id: productId,
+    qty: qty.value,
+  };
+  isLoading.value = true;
+  proxy.$http.post(url, { data: cartPayload }).then((res) => {
+    isLoading.value = false;
+    proxy.$httpMessageState(res, "加入購物車");
+    emitter.emit("update-cart");
+    router.push("/user/cart");
+  });
+}
+
+function formatCurrency(num) {
+  const safeNum = Number(num) || 0;
+  return `NT$ ${safeNum.toLocaleString()}`;
+}
+
+onBeforeMount(() => {
+  id.value = route.params.productId;
+  getProduct();
+});
 </script>
 
 <style>

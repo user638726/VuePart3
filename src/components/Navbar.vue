@@ -32,17 +32,19 @@
   </nav>
 </template>
 
-<script>
-export default {
-  methods: {
-    logout() {
-      const api = `${process.env.VUE_APP_API}logout`;
-      this.$http.post(api, this.user).then((res) => {
-        if (res.data.success) {
-          this.$router.push("/");
-        }
-      });
-    },
-  },
-};
+<script setup>
+import { getCurrentInstance } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const { proxy } = getCurrentInstance();
+
+function logout() {
+  const api = `${process.env.VUE_APP_API}logout`;
+  proxy.$http.post(api).then((res) => {
+    if (res.data.success) {
+      router.push("/");
+    }
+  });
+}
 </script>

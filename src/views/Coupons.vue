@@ -44,7 +44,7 @@
         </tr>
       </tbody>
     </table>
-    <couponModal
+    <CouponModal
       :coupon="tempCoupon"
       ref="couponModal"
       @update-coupon="updateCoupon"
@@ -53,83 +53,83 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { getCurrentInstance, onBeforeMount, ref } from "vue";
 import CouponModal from "@/components/CouponModal.vue";
 import DelModal from "@/components/DelModal.vue";
 
-export default {
-  components: { CouponModal, DelModal },
-  props: {
-    config: Object,
-  },
-  data() {
-    return {
-      coupons: {},
-      tempCoupon: {
-        title: "",
-        is_enabled: 0,
-        percent: 100,
-        code: "",
-      },
-      isLoading: false,
-      isNew: false,
-    };
-  },
-  methods: {
-    openCouponModal(isNew, item) {
-      this.isNew = isNew;
-      if (this.isNew) {
-        this.tempCoupon = {
-          due_date: new Date().getTime() / 1000,
-        };
-      } else {
-        this.tempCoupon = { ...item };
-      }
-      this.$refs.couponModal.showModal();
-    },
-    openDelCouponModal(item) {
-      this.tempCoupon = { ...item };
-      const delComponent = this.$refs.delModal;
-      delComponent.showModal();
-    },
-    getCoupons() {
-      this.isLoading = true;
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons`;
-      this.$http.get(url, this.tempProduct).then((response) => {
-        this.coupons = response.data.coupons;
-        this.isLoading = false;
-      });
-    },
-    updateCoupon(tempCoupon) {
-      if (this.isNew) {
-        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon`;
-        this.$http.post(url, { data: tempCoupon }).then((response) => {
-          this.$httpMessageState(response, "新增優惠券");
-          this.getCoupons();
-          this.$refs.couponModal.hideModal();
-        });
-      } else {
-        const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${this.tempCoupon.id}`;
-        this.$http.put(url, { data: this.tempCoupon }).then((response) => {
-          this.$httpMessageState(response, "更新優惠券");
-          this.getCoupons();
-          this.$refs.couponModal.hideModal();
-        });
-      }
-    },
-    delCoupon() {
-      const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${this.tempCoupon.id}`;
-      this.isLoading = true;
-      this.$http.delete(url).then((response) => {
-        this.$httpMessageState(response, "刪除優惠券");
-        const delComponent = this.$refs.delModal;
-        delComponent.hideModal();
-        this.getCoupons();
-      });
-    },
-  },
-  created() {
-    this.getCoupons();
-  },
-};
+const { proxy } = getCurrentInstance();
+
+defineProps({
+  config: Object,
+});
+
+const coupons = ref({});
+const tempCoupon = ref({
+  title: "",
+  is_enabled: 0,
+  percent: 100,
+  code: "",
+});
+const isLoading = ref(false);
+const isNew = ref(false);
+
+const couponModal = ref(null);
+const delModal = ref(null);
+
+function openCouponModal(newFlag, item) {
+  isNew.value = newFlag;
+  if (isNew.value) {
+    tempCoupon.value = { due_date: Date.now() / 1000 };
+  } else {
+    tempCoupon.value = { ...item };
+  }
+  couponModal.value.showModal();
+}
+
+function openDelCouponModal(item) {
+  tempCoupon.value = { ...item };
+  delModal.value.showModal();
+}
+
+function getCoupons() {
+  isLoading.value = true;
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons`;
+  proxy.$http.get(url).then((response) => {
+    coupons.value = response.data.coupons;
+    isLoading.value = false;
+  });
+}
+
+function updateCoupon(tempCouponParam) {
+  if (isNew.value) {
+    const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon`;
+    proxy.$http.post(url, { data: tempCouponParam }).then((response) => {
+      proxy.$httpMessageState(response, "新增優惠券");
+      getCoupons();
+      couponModal.value.hideModal();
+    });
+  } else {
+    const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${tempCouponParam.id}`;
+    proxy.$http.put(url, { data: tempCouponParam }).then((response) => {
+      proxy.$httpMessageState(response, "更新優惠券");
+      getCoupons();
+      couponModal.value.hideModal();
+    });
+  }
+}
+
+function delCoupon() {
+  const url = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${tempCoupon.value.id}`;
+  isLoading.value = true;
+  proxy.$http.delete(url).then((response) => {
+    proxy.$httpMessageState(response, "刪除優惠券");
+    delModal.value.hideModal();
+    getCoupons();
+  });
+}
+
+onBeforeMount(() => {
+  getCoupons();
+});
 </script>

@@ -4,7 +4,7 @@
     role="alert"
     aria-live="assertive"
     aria-atomic="true"
-    ref="toast"
+    ref="toastEl"
   >
     <div class="toast-header">
       <span
@@ -24,18 +24,19 @@
     </div>
   </div>
 </template>
-<script>
+
+<script setup>
+import { ref, onMounted } from "vue";
 import Toast from "bootstrap/js/dist/toast";
 
-export default {
-  name: "Toast",
-  props: ["msg"],
-  mounted() {
-    const toastEl = this.$refs.toast;
-    const toast = new Toast(toastEl, {
-      delay: 6000,
-    });
-    toast.show();
-  },
-};
+defineProps(["msg"]);
+
+const toastEl = ref(null);
+
+onMounted(() => {
+  const toast = new Toast(toastEl.value, {
+    delay: 6000,
+  });
+  toast.show();
+});
 </script>
